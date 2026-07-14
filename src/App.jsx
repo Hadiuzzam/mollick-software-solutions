@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   Blocks,
@@ -72,6 +72,8 @@ const contactCards = [
   }
 ];
 
+const assetPath = (path) => `${import.meta.env.BASE_URL}${path}`;
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -100,7 +102,7 @@ function App() {
       <header className="site-header">
         <a className="brand-mark" href="#top" aria-label="Mollick Software Solutions home">
           <span className="brand-icon">
-            <img src="/mollick-mark.png" alt="" />
+            <img src={assetPath('mollick-mark.png')} alt="" />
           </span>
           <span>
             <strong>Mollick</strong>
@@ -129,7 +131,7 @@ function App() {
       <main id="top">
         <section className="hero-section">
           <div className="hero-copy">
-            <img className="hero-logo" src="/mollick-logo.png" alt="Mollick Software Solutions logo" />
+            <img className="hero-logo" src={assetPath('mollick-logo.png')} alt="Mollick Software Solutions logo" />
             <span className="eyebrow"><Zap size={16} /> Premium software team</span>
             <h1>Mollick Software Solutions</h1>
             <p>
@@ -155,7 +157,7 @@ function App() {
           </div>
 
           <div className="hero-visual" aria-label="Software, server, and IoT product ecosystem">
-            <img src="/brand-ecosystem.png" alt="Mobile app, web dashboard, server, and IoT device setup" />
+            <img src={assetPath('brand-ecosystem.png')} alt="Mobile app, web dashboard, server, and IoT device setup" />
           </div>
         </section>
 
@@ -295,7 +297,7 @@ function App() {
 
       <footer className="site-footer">
         <div className="footer-brand">
-          <img src="/mollick-mark.png" alt="" />
+          <img src={assetPath('mollick-mark.png')} alt="" />
           <div>
             <strong>Mollick Software Solutions</strong>
             <p>Dhanbandhi, Sirajganj Sadar, Sirajganj</p>
@@ -307,10 +309,12 @@ function App() {
           <a href="#process">Process</a>
           <a href="#contact">Contact</a>
         </nav>
-        <small>Email: hadiuzzamanmollick07@gmail.com | WhatsApp: 01818225467 | © 2026 Mollick Software Solutions.</small>
+        <small>Email: hadiuzzamanmollick07@gmail.com | WhatsApp: 01818225467 | � 2026 Mollick Software Solutions.</small>
       </footer>
     </div>
   );
 }
 
 export default App;
+
+
