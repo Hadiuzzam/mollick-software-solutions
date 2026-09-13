@@ -18,10 +18,6 @@ import {
   where,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { WhatWeDoSection } from "./WhatWeDoSection";
-import { HomeAboutSection } from "./HomeAboutSection";
-import { ReviewsSection } from "./ReviewsSection";
-import { FAQSection } from "./FAQSection";
 import * as realtimeDatabase from 'firebase/database'
 import { onSnapshot as firestoreOnSnapshot } from 'firebase/firestore'
 
@@ -60,6 +56,7 @@ const API_BASE_URL =
   "https://bright-hospital-otp-server.onrender.com";
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 
+
 const formatClinicalDate = (value, lang = "en") => {
   if (!value) return "-";
 
@@ -85,6 +82,7 @@ const formatClinicalDate = (value, lang = "en") => {
   );
 };
 
+
 const downloadClinicalNotePdf = async ({
   note,
   booking,
@@ -108,12 +106,14 @@ const downloadClinicalNotePdf = async ({
     "z-index:-10"
   ].join(";");
 
+
   const medicines =
     Array.isArray(
       note.prescriptionItems
     )
       ? note.prescriptionItems
       : [];
+
 
   const safe = (value) =>
     String(value ?? "")
@@ -122,6 +122,7 @@ const downloadClinicalNotePdf = async ({
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
+
 
   const medicinesHtml =
     medicines.length
@@ -189,6 +190,7 @@ const downloadClinicalNotePdf = async ({
           </div>
         `;
 
+
   root.innerHTML = `
     <div style="
       padding:46px 52px;
@@ -244,6 +246,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           text-align:right;
         ">
@@ -268,6 +271,7 @@ const downloadClinicalNotePdf = async ({
         </div>
 
       </div>
+
 
       <div style="
         display:grid;
@@ -302,6 +306,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           padding:14px;
           background:#f3f8f6;
@@ -328,6 +333,7 @@ const downloadClinicalNotePdf = async ({
           </div>
 
         </div>
+
 
         <div style="
           padding:14px;
@@ -357,6 +363,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           padding:14px;
           background:#f3f8f6;
@@ -385,6 +392,7 @@ const downloadClinicalNotePdf = async ({
 
       </div>
 
+
       ${note.diagnosis
         ? `
           <div style="
@@ -411,6 +419,7 @@ const downloadClinicalNotePdf = async ({
         `
         : ""
       }
+
 
       ${note.symptoms
         ? `
@@ -439,6 +448,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       <div style="
         margin-top:26px;
         padding:20px;
@@ -459,6 +469,7 @@ const downloadClinicalNotePdf = async ({
         ${medicinesHtml}
 
       </div>
+
 
       ${note.prescription
         ? `
@@ -487,6 +498,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       ${note.advice
         ? `
           <div style="
@@ -513,6 +525,7 @@ const downloadClinicalNotePdf = async ({
         `
         : ""
       }
+
 
       ${note.followUpDate
         ? `
@@ -547,6 +560,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       <div style="
         display:flex;
         justify-content:space-between;
@@ -576,9 +590,11 @@ const downloadClinicalNotePdf = async ({
     </div>
   `;
 
+
   document.body.appendChild(
     root
   );
+
 
   try {
 
@@ -588,10 +604,12 @@ const downloadClinicalNotePdf = async ({
       await document.fonts.ready;
     }
 
+
     const logo =
       root.querySelector(
         "#clinical-pdf-logo"
       );
+
 
     if (
       logo &&
@@ -617,6 +635,7 @@ const downloadClinicalNotePdf = async ({
 
     }
 
+
     const canvas =
       await html2canvas(
         root,
@@ -628,6 +647,7 @@ const downloadClinicalNotePdf = async ({
         }
       );
 
+
     const pdf =
       new jsPDF(
         "p",
@@ -635,27 +655,34 @@ const downloadClinicalNotePdf = async ({
         "a4"
       );
 
+
     const pageWidth =
       pdf.internal.pageSize
         .getWidth();
+
 
     const pageHeight =
       pdf.internal.pageSize
         .getHeight();
 
+
     const margin = 8;
+
 
     const contentWidth =
       pageWidth -
       margin * 2;
 
+
     const contentHeight =
       pageHeight -
       margin * 2;
 
+
     const pxPerMm =
       canvas.width /
       contentWidth;
+
 
     const sliceHeight =
       Math.floor(
@@ -663,8 +690,10 @@ const downloadClinicalNotePdf = async ({
         pxPerMm
       );
 
+
     let offset = 0;
     let page = 0;
+
 
     while (
       offset <
@@ -678,21 +707,26 @@ const downloadClinicalNotePdf = async ({
           offset
         );
 
+
       const slice =
         document.createElement(
           "canvas"
         );
 
+
       slice.width =
         canvas.width;
 
+
       slice.height =
         currentHeight;
+
 
       const ctx =
         slice.getContext(
           "2d"
         );
+
 
       ctx.drawImage(
         canvas,
@@ -706,11 +740,13 @@ const downloadClinicalNotePdf = async ({
         currentHeight
       );
 
+
       if (
         page > 0
       ) {
         pdf.addPage();
       }
+
 
       pdf.addImage(
         slice.toDataURL(
@@ -727,11 +763,14 @@ const downloadClinicalNotePdf = async ({
         "FAST"
       );
 
+
       offset +=
         currentHeight;
 
+
       page += 1;
     }
+
 
     const fileDate =
       String(
@@ -743,6 +782,7 @@ const downloadClinicalNotePdf = async ({
           /[^0-9A-Za-z-]/g,
           "-"
         );
+
 
     pdf.save(
       "Bright-Health-Prescription-" +
@@ -757,6 +797,7 @@ const downloadClinicalNotePdf = async ({
 
   }
 };
+
 
 const normalizePhoneNumber = (value) =>
   String(value || "")
@@ -774,79 +815,6 @@ const phoneInputProps = {
   placeholder: "01XXXXXXXXX",
   title: "Enter an 11 digit Bangladesh mobile number starting with 01",
 };
-
-const softwarePackages = [
-  {
-    en: "Hospital Management System",
-    bn: "হাসপাতাল ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/hospital-management.webp`,
-    altEn: "Hospital management software dashboard",
-    altBn: "হাসপাতাল ম্যানেজমেন্ট সফটওয়্যার ড্যাশবোর্ড",
-  },
-  {
-    en: "ERP System",
-    bn: "ERP সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/erp-system.webp`,
-    altEn: "ERP business management dashboard",
-    altBn: "ERP ব্যবসা ব্যবস্থাপনা ড্যাশবোর্ড",
-  },
-  {
-    en: "School, College, Madrasa Website",
-    bn: "স্কুল, কলেজ ও মাদ্রাসা ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/education-website.webp`,
-    altEn: "Education website and learning portal",
-    altBn: "শিক্ষা প্রতিষ্ঠান ওয়েবসাইট ও লার্নিং পোর্টাল",
-  },
-  {
-    en: "Business Management System",
-    bn: "বিজনেস ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/business-management.webp`,
-    altEn: "Business management analytics workspace",
-    altBn: "বিজনেস ম্যানেজমেন্ট অ্যানালিটিক্স ওয়ার্কস্পেস",
-  },
-  {
-    en: "Club & Organisation Websites",
-    bn: "ক্লাব ও সংগঠন ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/club-organisation.webp`,
-    altEn: "Club and organisation community website",
-    altBn: "ক্লাব ও সংগঠনের কমিউনিটি ওয়েবসাইট",
-  },
-  {
-    en: "Mobile Application Android",
-    bn: "অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/android-app.webp`,
-    altEn: "Premium Android mobile application interface",
-    altBn: "প্রিমিয়াম অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
-  },
-  {
-    en: "Mobile Application iOS",
-    bn: "iOS মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ios-app.webp`,
-    altEn: "Premium iOS mobile application interface",
-    altBn: "প্রিমিয়াম iOS মোবাইল অ্যাপ্লিকেশন",
-  },
-  {
-    en: "Introducing Website",
-    bn: "পরিচিতিমূলক ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/introducing-website.webp`,
-    altEn: "Corporate introduction website",
-    altBn: "কর্পোরেট পরিচিতিমূলক ওয়েবসাইট",
-  },
-  {
-    en: "Online News Portal",
-    bn: "অনলাইন নিউজ পোর্টাল",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/online-news.webp`,
-    altEn: "Online news portal and digital newsroom",
-    altBn: "অনলাইন নিউজ পোর্টাল ও ডিজিটাল নিউজরুম",
-  },
-  {
-    en: "E-commerce Website",
-    bn: "ই-কমার্স ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ecommerce-website.webp`,
-    altEn: "Premium e-commerce shopping website",
-    altBn: "প্রিমিয়াম ই-কমার্স শপিং ওয়েবসাইট",
-  },
-];
 
 const copy = {
   en: {
@@ -1367,6 +1335,7 @@ const appointmentDepartments = [
   },
 ];
 
+
 const dayLabels = {
   en: [
     'Sunday',
@@ -1388,6 +1357,7 @@ const dayLabels = {
     'শনিবার'
   ]
 }
+
 
 const scheduleDayMap = {
   sun: 0,
@@ -1415,6 +1385,7 @@ const scheduleDayMap = {
   saturday: 6
 }
 
+
 const scheduleDateValue = date => {
   const year = date.getFullYear()
 
@@ -1431,11 +1402,13 @@ const scheduleDateValue = date => {
   return `${year}-${month}-${day}`
 }
 
+
 const normalizeDoctorSchedule = value =>
   String(value || '')
     .replace(/–|—/g, '-')
     .replace(/\s+/g, ' ')
     .trim()
+
 
 const parseScheduleDay = value => {
 
@@ -1443,6 +1416,7 @@ const parseScheduleDay = value => {
     String(value || '')
       .toLowerCase()
       .replace(/[^a-z]/g, '')
+
 
   return Object.prototype
     .hasOwnProperty.call(
@@ -1453,6 +1427,7 @@ const parseScheduleDay = value => {
       : null
 }
 
+
 const parseScheduleDays = value => {
 
   let text =
@@ -1460,6 +1435,7 @@ const parseScheduleDays = value => {
       .toLowerCase()
       .replace(/\bevery\b/g, ' ')
       .trim()
+
 
   if (/\bdaily\b/.test(text)) {
 
@@ -1469,7 +1445,9 @@ const parseScheduleDays = value => {
 
   }
 
+
   const result = []
+
 
   /*
      Mon - Thu
@@ -1478,10 +1456,12 @@ const parseScheduleDays = value => {
   const rangePattern =
     /\b(sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\s*-\s*(sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\b/i
 
+
   const rangeMatch =
     text.match(
       rangePattern
     )
+
 
   if (rangeMatch) {
 
@@ -1495,6 +1475,7 @@ const parseScheduleDays = value => {
         rangeMatch[2]
       )
 
+
     if (
       start !== null &&
       end !== null
@@ -1502,6 +1483,7 @@ const parseScheduleDays = value => {
 
       let current =
         start
+
 
       for (
         let i = 0;
@@ -1519,16 +1501,19 @@ const parseScheduleDays = value => {
           )
         }
 
+
         if (
           current === end
         ) {
           break
         }
 
+
         current =
           (current + 1) % 7
       }
     }
+
 
     text =
       text.replace(
@@ -1536,6 +1521,7 @@ const parseScheduleDays = value => {
         ' '
       )
   }
+
 
   /*
      Sun, Mon & Tue
@@ -1546,12 +1532,14 @@ const parseScheduleDays = value => {
       /\b(?:sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\b/gi
     ) || []
 
+
   matches.forEach(token => {
 
     const day =
       parseScheduleDay(
         token
       )
+
 
     if (
       day !== null &&
@@ -1562,8 +1550,10 @@ const parseScheduleDays = value => {
 
   })
 
+
   return result
 }
+
 
 const parseClockMinutes = (
   value,
@@ -1577,19 +1567,23 @@ const parseClockMinutes = (
         /^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i
       )
 
+
   if (!match) {
     return null
   }
+
 
   let hour =
     Number(
       match[1]
     )
 
+
   const minute =
     Number(
       match[2] || 0
     )
+
 
   const meridiem =
     String(
@@ -1597,6 +1591,7 @@ const parseClockMinutes = (
       inheritedMeridiem ||
       ''
     ).toUpperCase()
+
 
   if (
     hour < 1 ||
@@ -1610,12 +1605,14 @@ const parseClockMinutes = (
     return null
   }
 
+
   if (
     meridiem === 'AM' &&
     hour === 12
   ) {
     hour = 0
   }
+
 
   if (
     meridiem === 'PM' &&
@@ -1624,11 +1621,13 @@ const parseClockMinutes = (
     hour += 12
   }
 
+
   return (
     hour * 60 +
     minute
   )
 }
+
 
 const formatClockMinutes = minutes => {
 
@@ -1637,25 +1636,31 @@ const formatClockMinutes = minutes => {
       minutes / 60
     )
 
+
   const minute =
     minutes % 60
+
 
   const meridiem =
     hour24 >= 12
       ? 'PM'
       : 'AM'
 
+
   let hour12 =
     hour24 % 12
+
 
   if (hour12 === 0) {
     hour12 = 12
   }
 
+
   return (
     `${hour12}:${String(minute).padStart(2, '0')} ${meridiem}`
   )
 }
+
 
 const buildThirtyMinuteSlots = (
   start,
@@ -1670,7 +1675,9 @@ const buildThirtyMinuteSlots = (
     return []
   }
 
+
   const result = []
+
 
   for (
     let current = start;
@@ -1686,8 +1693,10 @@ const buildThirtyMinuteSlots = (
 
   }
 
+
   return result
 }
+
 
 const parseSingleTimeWindow = value => {
 
@@ -1696,6 +1705,7 @@ const parseSingleTimeWindow = value => {
       .replace(/,/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
+
 
   /*
      "from 3 PM"
@@ -1709,12 +1719,14 @@ const parseSingleTimeWindow = value => {
       /^from\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm))$/i
     )
 
+
   if (fromMatch) {
 
     const minutes =
       parseClockMinutes(
         fromMatch[1]
       )
+
 
     return Number.isFinite(minutes)
       ? [
@@ -1724,6 +1736,7 @@ const parseSingleTimeWindow = value => {
         ]
       : []
   }
+
 
   /*
      4 PM - 8 PM
@@ -1736,6 +1749,7 @@ const parseSingleTimeWindow = value => {
       /(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*-\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i
     )
 
+
   if (rangeMatch) {
 
     const endMeridiem =
@@ -1745,22 +1759,26 @@ const parseSingleTimeWindow = value => {
         []
       )[1] || ''
 
+
     const start =
       parseClockMinutes(
         rangeMatch[1],
         endMeridiem
       )
 
+
     const end =
       parseClockMinutes(
         rangeMatch[2]
       )
+
 
     return buildThirtyMinuteSlots(
       start,
       end
     )
   }
+
 
   /*
      One exact visiting time
@@ -1771,14 +1789,17 @@ const parseSingleTimeWindow = value => {
       /(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i
     )
 
+
   if (!oneTime) {
     return []
   }
+
 
   const minutes =
     parseClockMinutes(
       oneTime[1]
     )
+
 
   return Number.isFinite(minutes)
     ? [
@@ -1788,6 +1809,7 @@ const parseSingleTimeWindow = value => {
       ]
     : []
 }
+
 
 const parseScheduleTimes = value => {
 
@@ -1802,6 +1824,7 @@ const parseScheduleTimes = value => {
       )
       .filter(Boolean)
 
+
   return [
     ...new Set(
       parts.flatMap(
@@ -1811,16 +1834,19 @@ const parseScheduleTimes = value => {
   ]
 }
 
+
 const getClosedDays = schedule => {
 
   const result =
     new Set()
+
 
   const closedNotes =
     String(schedule || '')
       .match(
         /\([^)]*closed[^)]*\)/gi
       ) || []
+
 
   closedNotes
     .forEach(note => {
@@ -1833,17 +1859,21 @@ const getClosedDays = schedule => {
 
     })
 
+
   return result
 }
+
 
 const parseDoctorVisitingSchedule = doctor => {
 
   const result =
     new Map()
 
+
   if (!doctor) {
     return result
   }
+
 
   /*
      Prefer structured schedule data
@@ -1872,6 +1902,7 @@ const parseDoctorVisitingSchedule = doctor => {
                 )
             : []
 
+
         const times =
           Array.isArray(rule?.times)
             ? [
@@ -1888,6 +1919,7 @@ const parseDoctorVisitingSchedule = doctor => {
               ]
             : []
 
+
         days.forEach(day => {
 
           result.set(
@@ -1899,10 +1931,12 @@ const parseDoctorVisitingSchedule = doctor => {
 
       })
 
+
     if (result.size) {
       return result
     }
   }
+
 
   /*
      Current uploaded doctors already expose
@@ -1917,14 +1951,17 @@ const parseDoctorVisitingSchedule = doctor => {
       ''
     )
 
+
   if (!raw) {
     return result
   }
+
 
   const closedDays =
     getClosedDays(
       raw
     )
+
 
   const clean =
     raw
@@ -1934,6 +1971,7 @@ const parseDoctorVisitingSchedule = doctor => {
       )
       .trim()
 
+
   const segments =
     clean
       .split(';')
@@ -1941,6 +1979,7 @@ const parseDoctorVisitingSchedule = doctor => {
         item.trim()
       )
       .filter(Boolean)
+
 
   segments.forEach(segment => {
 
@@ -1954,11 +1993,13 @@ const parseDoctorVisitingSchedule = doctor => {
         /\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i
       )
 
+
     if (
       firstClock === -1
     ) {
       return
     }
+
 
     let dayPart =
       segment
@@ -1968,12 +2009,14 @@ const parseDoctorVisitingSchedule = doctor => {
         )
         .trim()
 
+
     let timePart =
       segment
         .slice(
           firstClock
         )
         .trim()
+
 
     /*
        Preserve:
@@ -1997,15 +2040,18 @@ const parseDoctorVisitingSchedule = doctor => {
         timePart
     }
 
+
     const days =
       parseScheduleDays(
         dayPart
       )
 
+
     const times =
       parseScheduleTimes(
         timePart
       )
+
 
     if (
       !days.length ||
@@ -2013,6 +2059,7 @@ const parseDoctorVisitingSchedule = doctor => {
     ) {
       return
     }
+
 
     /*
        Specific later schedule overwrites
@@ -2034,14 +2081,17 @@ const parseDoctorVisitingSchedule = doctor => {
 
   })
 
+
   closedDays.forEach(day => {
 
     result.delete(day)
 
   })
 
+
   return result
 }
+
 
 const appointmentTimeMinutes = value => {
 
@@ -2050,10 +2100,12 @@ const appointmentTimeMinutes = value => {
       String(value || '')
     )
 
+
   return Number.isFinite(minutes)
     ? minutes
     : -1
 }
+
 
 const getUpcomingAppointmentDates = (
   doctor,
@@ -2064,10 +2116,12 @@ const getUpcomingAppointmentDates = (
     return []
   }
 
+
   const schedule =
     parseDoctorVisitingSchedule(
       doctor
     )
+
 
   /*
      Critical rule:
@@ -2080,15 +2134,19 @@ const getUpcomingAppointmentDates = (
     return []
   }
 
+
   const now =
     new Date()
+
 
   const locale =
     lang === 'bn'
       ? 'bn-BD'
       : 'en-US'
 
+
   const result = []
+
 
   /*
      Search up to next 60 days
@@ -2109,8 +2167,10 @@ const getUpcomingAppointmentDates = (
         now.getDate() + offset
       )
 
+
     const weekday =
       date.getDay()
+
 
     let timeSlots =
       [
@@ -2120,6 +2180,7 @@ const getUpcomingAppointmentDates = (
           ) || []
         )
       ]
+
 
     /*
        Today:
@@ -2132,6 +2193,7 @@ const getUpcomingAppointmentDates = (
         now.getHours() * 60 +
         now.getMinutes()
 
+
       timeSlots =
         timeSlots.filter(
           time =>
@@ -2143,15 +2205,18 @@ const getUpcomingAppointmentDates = (
 
     }
 
+
     if (!timeSlots.length) {
       continue
     }
+
 
     timeSlots.sort(
       (a, b) =>
         appointmentTimeMinutes(a) -
         appointmentTimeMinutes(b)
     )
+
 
     result.push({
 
@@ -2180,8 +2245,10 @@ const getUpcomingAppointmentDates = (
 
   }
 
+
   return result
 }
+
 
 const isDoctorAppointmentValid = (
   doctor,
@@ -2197,11 +2264,13 @@ const isDoctorAppointmentValid = (
     return false
   }
 
+
   const availableDates =
     getUpcomingAppointmentDates(
       doctor,
       'en'
     )
+
 
   const validDate =
     availableDates.find(
@@ -2209,15 +2278,18 @@ const isDoctorAppointmentValid = (
         item.value === date
     )
 
+
   if (!validDate) {
     return false
   }
+
 
   return validDate.timeSlots
     .includes(
       time
     )
 }
+
 
 const getDoctorDepartmentId = doctorInitials =>
   appointmentDepartments.find(
@@ -2227,6 +2299,7 @@ const getDoctorDepartmentId = doctorInitials =>
       )
   )?.id ||
   appointmentDepartments[0].id
+
 
 const getDoctorsByDepartment = departmentId => {
 
@@ -2238,6 +2311,7 @@ const getDoctorsByDepartment = departmentId => {
     )?.doctors ||
     []
 
+
   return doctors.filter(
     doctor =>
       initials.includes(
@@ -2245,6 +2319,7 @@ const getDoctorsByDepartment = departmentId => {
       )
   )
 }
+
 
 const icons = {
   user: (
@@ -2625,6 +2700,7 @@ export default function App() {
     }
   }, [appointmentDates, selectedAppointmentDate]);
 
+
   // BRIGHT_SCROLL_REVEAL_START
   useEffect(() => {
     const markedElements = [];
@@ -2658,6 +2734,7 @@ export default function App() {
         });
     };
 
+
     // -----------------------------------------
     // How can we help
     // -----------------------------------------
@@ -2672,6 +2749,7 @@ export default function App() {
       "visual",
       (index) => index * 400
     );
+
 
     // -----------------------------------------
     // Doctors
@@ -2688,6 +2766,7 @@ export default function App() {
       520
     );
 
+
     // -----------------------------------------
     // Specialized services
     // -----------------------------------------
@@ -2702,6 +2781,7 @@ export default function App() {
       "visual",
       (index) => (index % 3) * 380
     );
+
 
     // -----------------------------------------
     // Health package
@@ -2718,6 +2798,7 @@ export default function App() {
       560
     );
 
+
     // -----------------------------------------
     // Mobile app
     // -----------------------------------------
@@ -2733,42 +2814,6 @@ export default function App() {
       560
     );
 
-    // -----------------------------------------
-    // Mollick What We Do
-    // Use the website's existing slow premium fade reveal
-    // -----------------------------------------
-
-    mark(
-      ".mollick-services__heading",
-      "text"
-    );
-
-    mark(
-      ".mollick-services__row .mollick-services__copy",
-      "text"
-    );
-
-    mark(
-      ".mollick-services__row .mollick-services__visual",
-      "visual",
-      480
-    );
-
-    // -----------------------------------------
-    // Mollick Our Process
-    // Existing premium fade/reveal system
-    // -----------------------------------------
-
-    mark(
-      ".mollick-process-section__heading",
-      "text"
-    );
-
-    mark(
-      ".mollick-process-card",
-      "visual",
-      360
-    );
 
     // -----------------------------------------
     // Why Bright Health
@@ -2785,6 +2830,7 @@ export default function App() {
       "text",
       560
     );
+
 
     // -----------------------------------------
     // Contact
@@ -2820,6 +2866,7 @@ export default function App() {
       markedElements.push(field);
     });
 
+
     // -----------------------------------------
     // Footer
     // Column 1 -> 2 -> 3 -> 4
@@ -2844,6 +2891,7 @@ export default function App() {
       markedElements.push(column);
     });
 
+
     // -----------------------------------------
     // Reduced motion
     // -----------------------------------------
@@ -2861,6 +2909,7 @@ export default function App() {
       return undefined;
     }
 
+
     // Mobile should not make users wait too long
     const delayScale =
       window.matchMedia(
@@ -2869,7 +2918,9 @@ export default function App() {
         ? 0.55
         : 1;
 
+
     const timers = new Set();
+
 
     // -----------------------------------------
     // Intersection observer
@@ -2912,9 +2963,11 @@ export default function App() {
         }
       );
 
+
     markedElements.forEach((element) => {
       observer.observe(element);
     });
+
 
     return () => {
       observer.disconnect();
@@ -2925,6 +2978,7 @@ export default function App() {
     };
   }, []);
   // BRIGHT_SCROLL_REVEAL_END
+
 
   // DOCTOR_SCREEN_DYNAMIC_REVEAL_START
   useEffect(() => {
@@ -2939,6 +2993,7 @@ export default function App() {
 
       if (!screen) return;
 
+
       const heading =
         screen.querySelector(
           ".doctor-screen-head > div"
@@ -2951,12 +3006,15 @@ export default function App() {
           )
         );
 
+
       const targets = [
         ...(heading ? [heading] : []),
         ...cards,
       ];
 
+
       if (!targets.length) return;
+
 
       // Apply existing global reveal classes dynamically
       if (heading) {
@@ -2966,6 +3024,7 @@ export default function App() {
         );
       }
 
+
       cards.forEach((card) => {
         card.dataset.reveal = "visual";
 
@@ -2974,10 +3033,12 @@ export default function App() {
         );
       });
 
+
       const reducedMotion =
         window.matchMedia(
           "(prefers-reduced-motion: reduce)"
         ).matches;
+
 
       if (reducedMotion) {
         targets.forEach((element) => {
@@ -2989,13 +3050,16 @@ export default function App() {
         return;
       }
 
+
       const mobile =
         window.matchMedia(
           "(max-width: 640px)"
         ).matches;
 
+
       const stagger =
         mobile ? 220 : 380;
+
 
       observer =
         new IntersectionObserver(
@@ -3018,6 +3082,7 @@ export default function App() {
                   const bRect =
                     b.target.getBoundingClientRect();
 
+
                   // top row first
                   if (
                     Math.abs(
@@ -3030,6 +3095,7 @@ export default function App() {
                     );
                   }
 
+
                   // then left -> right
                   return (
                     aRect.left -
@@ -3037,20 +3103,24 @@ export default function App() {
                   );
                 });
 
+
             visible.forEach(
               (entry, index) => {
 
                 const element =
                   entry.target;
 
+
                 const isHeading =
                   element === heading;
+
 
                 const delay =
                   isHeading
                     ? 0
                     : (index + 1) *
                       stagger;
+
 
                 const timer =
                   window.setTimeout(
@@ -3068,6 +3138,7 @@ export default function App() {
                     delay
                   );
 
+
                 timers.add(timer);
 
                 // reveal only once
@@ -3084,11 +3155,13 @@ export default function App() {
           }
         );
 
+
       targets.forEach((element) => {
         observer.observe(element);
       });
 
     });
+
 
     return () => {
 
@@ -3096,9 +3169,11 @@ export default function App() {
         frame
       );
 
+
       if (observer) {
         observer.disconnect();
       }
+
 
       timers.forEach((timer) => {
         window.clearTimeout(timer);
@@ -3108,6 +3183,8 @@ export default function App() {
 
   }, [doctorListOpen]);
   // DOCTOR_SCREEN_DYNAMIC_REVEAL_END
+
+
 
   useEffect(() => {
     document.documentElement.lang = lang === "bn" ? "bn" : "en";
@@ -3136,6 +3213,7 @@ export default function App() {
     };
   }, []);
 
+  
   // PATIENT_PORTAL_REALTIME_START
   useEffect(() => {
 
@@ -3144,6 +3222,7 @@ export default function App() {
     let unsubscribeReports = null
     let unsubscribeInvoices = null
     let unsubscribeClinicalNotes = null
+
 
     const stopRealtimeListeners = () => {
 
@@ -3174,6 +3253,7 @@ export default function App() {
 
     }
 
+
     const clearPatientData = () => {
 
       setCurrentPatient(null)
@@ -3183,6 +3263,7 @@ export default function App() {
       setPatientClinicalNotes([])
 
     }
+
 
     const timestampValue = value => {
 
@@ -3219,6 +3300,7 @@ export default function App() {
 
     }
 
+
     const sortDesc = (a, b) => {
 
       const aTime =
@@ -3237,6 +3319,7 @@ export default function App() {
 
     }
 
+
     const snapshotToArray =
       snapshot =>
         snapshot.docs
@@ -3246,6 +3329,7 @@ export default function App() {
           }))
           .sort(sortDesc)
 
+
     const unsubscribeAuth =
       onAuthStateChanged(
         firebaseAuth,
@@ -3254,6 +3338,7 @@ export default function App() {
           // Auth changed:
           // stop listeners from previous user.
           stopRealtimeListeners()
+
 
           if (
             !user ||
@@ -3265,7 +3350,9 @@ export default function App() {
 
           }
 
+
           const uid = user.uid
+
 
           // ============================================
           // PATIENT PROFILE - REALTIME
@@ -3279,6 +3366,7 @@ export default function App() {
               'patients',
               uid
             )
+
 
           unsubscribePatient =
             firestoreOnSnapshot(
@@ -3294,6 +3382,7 @@ export default function App() {
                   return
 
                 }
+
 
                 setCurrentPatient({
                   uid,
@@ -3312,6 +3401,7 @@ export default function App() {
 
               }
             )
+
 
           // ============================================
           // BOOKINGS - REALTIME
@@ -3332,6 +3422,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeBookings =
             firestoreOnSnapshot(
@@ -3357,6 +3448,7 @@ export default function App() {
               }
             )
 
+
           // ============================================
           // REPORTS - REALTIME
           // ============================================
@@ -3376,6 +3468,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeReports =
             firestoreOnSnapshot(
@@ -3401,6 +3494,7 @@ export default function App() {
               }
             )
 
+
           // PATIENT_CLINICAL_NOTES_REALTIME
           // ============================================
           // PRESCRIPTIONS - REALTIME
@@ -3421,6 +3515,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeClinicalNotes =
             firestoreOnSnapshot(
@@ -3446,6 +3541,7 @@ export default function App() {
               }
             )
 
+
           // ============================================
           // INVOICES - REALTIME
           // ============================================
@@ -3465,6 +3561,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeInvoices =
             firestoreOnSnapshot(
@@ -3492,6 +3589,7 @@ export default function App() {
 
         }
       )
+
 
     return () => {
 
@@ -3861,6 +3959,7 @@ export default function App() {
       return
     }
 
+
     if (!isValidBDPhone(rawPhone)) {
       setBookingError(
         lang === "en"
@@ -3952,44 +4051,38 @@ export default function App() {
             <small>SOFTWARE SOLUTIONS</small>
           </span>
         </a>
-        <nav
-          className={menu ? "nav open" : "nav"}
-          aria-label={lang === "en" ? "Main navigation" : "প্রধান নেভিগেশন"}
-        >
-          {[
-            ["home", lang === "en" ? "Home" : "হোম"],
-            ["services", lang === "en" ? "What We Do" : "আমরা কী করি"],
-            ["about", lang === "en" ? "Our Process" : "কাজের প্রক্রিয়া"],
-            ["packages", lang === "en" ? "Our Packages" : "আমাদের প্যাকেজ"],
-            ["faq", lang === "en" ? "FAQ" : "প্রশ্নোত্তর"],
-          ].map(([id, label]) => (
+        <nav className={menu ? "nav open" : "nav"} aria-label="Main navigation">
+          {["services", "doctors", "packages", "about"].map((id, i) => (
             <button key={id} onClick={() => scrollTo(id)}>
-              {label}
+              {t.nav[i]}
             </button>
           ))}
-
-          <button className="nav-book" onClick={() => scrollTo("contact")}>
-            {lang === "en" ? "Contact Us" : "যোগাযোগ করুন"}
+          <button className="portal-mobile" onClick={openPortal}>
+            {t.portal}
+          </button>
+          <button className="nav-book" onClick={openBooking}>
+            {t.appointment}
           </button>
         </nav>
         <div className="header-actions">
           <button
             className="language"
             onClick={() => setLang(lang === "en" ? "bn" : "en")}
-            aria-label={lang === "en" ? "Switch to Bangla" : "ইংরেজিতে পরিবর্তন করুন"}
+            aria-label="Change language"
           >
             {t.language}
           </button>
-
-          <button className="book-small" onClick={() => scrollTo("contact")}>
-            {lang === "en" ? "Contact Us" : "যোগাযোগ করুন"}
+          <button className="portal" onClick={openPortal}>
+            {t.portal}
+          </button>
+          <button className="book-small" onClick={openBooking}>
+            {t.appointment}
             <Icon name="arrow" size={17} />
           </button>
-
           <button
             className="menu"
             onClick={() => setMenu(!menu)}
-            aria-label={lang === "en" ? "Toggle menu" : "মেনু খুলুন বা বন্ধ করুন"}
+            aria-label="Toggle menu"
           >
             <Icon name={menu ? "close" : "menu"} />
           </button>
@@ -3997,195 +4090,460 @@ export default function App() {
       </header>
 
       <main id="home">
-<section
-          className="mollick-boom-hero"
-          aria-labelledby="mollick-hero-title"
-        >
-          <div className="mollick-boom-hero-inner reveal">
-            <div className="mollick-boom-badge">
-              <span className="mollick-boom-dot" aria-hidden="true" />
-              <span>
-                {lang === "en"
-                  ? "5+ YEARS OF TRUSTED SOFTWARE DEVELOPMENT"
-                  : "৫+ বছরের বিশ্বস্ত সফটওয়্যার ডেভেলপমেন্ট"}
-              </span>
-            </div>
-
-            <h1
-              id="mollick-hero-title"
-              className={lang === "bn" ? "hero-title-bn" : "hero-title-en"}
-            >
-              <span>
-                {lang === "en"
-                  ? "We build software that grow"
-                  : "আমরা এমন সফটওয়্যার তৈরি করি,"}
-              </span>
-              <strong>
-                {lang === "en"
-                  ? "your business."
-                  : "যা আপনার ব্যবসাকে এগিয়ে নিয়ে যায়।"}
-              </strong>
+<section className="hero">
+          <div className="hero-copy reveal">
+            <span className="eyebrow">
+              <i />
+              {t.open}
+            </span>
+            <h1>
+              {t.heroA}
+              <br />
+              <em>{t.heroB}</em>
             </h1>
-
-            <p>
-              {lang === "en"
-                ? "We listen, we design, we engineer, turning ideas into high-performance products for businesses that cannot afford to get it wrong."
-                : "আমরা শুনি, ডিজাইন করি এবং তৈরি করি—আপনার আইডিয়াকে রূপ দিই নির্ভরযোগ্য, উচ্চমানের ডিজিটাল প্রোডাক্টে, যা ব্যবসাকে এগিয়ে নিতে তৈরি।"}
-            </p>
-
+            <p>{t.heroP}</p>
+            <div className="hero-actions">
+              <button
+                className="button primary"
+                onClick={() => scrollTo("doctors")}
+              >
+                {t.findDoctor}
+                <Icon name="arrow" size={18} />
+              </button>
+              <button className="button secondary" onClick={openBooking}>
+                <Icon name="calendar" size={18} />
+                {t.appointment}
+              </button>
+            </div>
             <button
-              type="button"
-              className="mollick-boom-cta"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en" ? "Book a call" : "কল বুক করুন"}
-              <Icon name="arrow" size={18} />
-            </button>
-            <div
-              className="hero-package-flow software-package-flow"
-              aria-label={
-                lang === "en"
-                  ? "Scrolling software package list"
-                  : "চলমান সফটওয়্যার প্যাকেজ তালিকা"
-              }
-            >
-              <div className="software-package-track">
-                {[...softwarePackages, ...softwarePackages].map((pkg, index) => (
-                  <article
-                  className="software-package-card"
-                  key={`${pkg.en}-${index}`}
-                >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-
-                  <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
-
-                  <button
-                    type="button"
-                    className="software-package-book"
-                    onClick={() => scrollTo("contact")}
-                  >
-                    {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
-                    <Icon name="arrow" size={16} />
-                  </button>
-                </article>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </section>
-        <div className="mollick-what-we-do-wrap">
-          <WhatWeDoSection lang={lang} />
-        </div>
-
-        <div className="mollick-process-wrap">
-          <HomeAboutSection lang={lang} />
-        </div>
-
-        <div className="mollick-reviews-wrap">
-          <ReviewsSection lang={lang} />
-        </div>
-
-        <section className="software-package-section section-pad" id="packages">
-          <div className="software-package-heading">
-            <div className="section-intro">
-              <span className="kicker">
-                {lang === "en" ? "Our Packages" : "আমাদের প্যাকেজসমূহ"}
-              </span>
-              <h2>
-                {lang === "en"
-                  ? "Choose the right solution for your business."
-                  : "আপনার প্রয়োজন অনুযায়ী সঠিক সমাধান বেছে নিন।"}
-              </h2>
-              <p>
-                {lang === "en"
-                  ? "Ready-to-start software, website and mobile application packages designed for growing organisations."
-                  : "ব্যবসা ও প্রতিষ্ঠানের জন্য প্রস্তুত সফটওয়্যার, ওয়েবসাইট এবং মোবাইল অ্যাপ্লিকেশন প্যাকেজ।"}
-              </p>
-            </div>
-          </div>
-
-          <div
-            className="software-package-flow"
+            type="button"
+            className="hero-left-app-card"
+            onClick={() => scrollTo('app')}
             aria-label={
-              lang === "en"
-                ? "Scrolling software package list"
-                : "চলমান সফটওয়্যার প্যাকেজ তালিকা"
+              lang === 'en'
+                ? 'Explore Bright Health mobile app'
+                : 'ব্রাইট হেলথ মোবাইল অ্যাপ দেখুন'
             }
           >
-            <div className="software-package-track">
-              {[...softwarePackages, ...softwarePackages].map((pkg, index) => (
-                <article
-                  className="software-package-card"
-                  key={`${pkg.en}-${index}`}
-                >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
+            <span className="hero-left-app-copy">
+              <small>
+                {lang === 'en'
+                  ? 'Bright Health Mobile App'
+                  : 'ব্রাইট হেলথ মোবাইল অ্যাপ'}
+              </small>
 
-                  <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
+              <strong>
+                {lang === 'en'
+                  ? 'Your care, in your pocket'
+                  : 'আপনার স্বাস্থ্যসেবা, এখন হাতের মুঠোয়'}
+              </strong>
 
-                  <button
-                    type="button"
-                    className="software-package-book"
-                    onClick={() => scrollTo("contact")}
+              <span>
+                {lang === 'en'
+                  ? 'Appointments · Reports · Packages'
+                  : 'অ্যাপয়েন্টমেন্ট · রিপোর্ট · হেলথ প্যাকেজ'}
+              </span>
+            </span>
+
+            <span
+              className="hero-left-app-arrow"
+              aria-hidden="true"
+            >
+              <Icon name="arrow" size={16}/>
+            </span>
+          </button>
+          <a
+            className="trust-note trust-note-link"
+            href="https://share.google/ZLoe6GMuSw3HtGVMs"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={lang === 'en'
+              ? 'View Bright Health reviews'
+              : 'ব্রাইট হেলথের রিভিউ দেখুন'}
+          >
+              <span className="avatar-stack">
+                <b>MR</b>
+                <b>SA</b>
+                <b>NH</b>
+              </span>
+              <span>
+                <strong>4.9</strong>
+                <span className="stars">★★★★★</span>
+                <small>{t.trusted}</small>
+              </span>
+            </a>
+          </div>
+          <div className="hero-visual reveal">
+            <div className="hero-image">
+              <img
+                src={asset("hospital-building.webp")}
+                alt="Bright Health Specialized Hospital building"
+                fetchPriority="high"
+              />
+              <span className="image-shade" />
+            </div>
+            <div className="emergency-card">
+              <span className="pulse-icon">
+                <Icon name="pulse" />
+              </span>
+              <span>
+                <small>{t.always}</small>
+                <strong>
+                  {lang === "en"
+                    ? "National service · 999"
+                    : "জাতীয় সেবা · ৯৯৯"}
+                </strong>
+              </span>
+            </div>
+            <div className="care-badge">
+  <span>BH</span>
+  <p>
+    <strong>
+      {lang === 'en'
+        ? 'Care, close by.'
+        : 'সেবা, একদম কাছে।'}
+    </strong>
+    <small>
+      {lang === 'en'
+        ? 'Bright Health Hospital'
+        : 'ব্রাইট হেলথ হাসপাতাল'}
+    </small>
+  </p>
+</div>
+          </div>
+        </section>
+
+      <section className="notice-ticker" aria-label={t.noticeLabel}>
+          <div className="notice-label">
+            <span className="notice-live-dot" aria-hidden="true" />
+            <span>{t.noticeLabel}</span>
+          </div>
+
+          <div className="notice-viewport">
+            <div className="notice-track">
+
+              <div className="notice-group">
+                {t.notices.map((notice, index) => (
+                  <span
+                    className="notice-item"
+                    key={`notice-a-${index}`}
                   >
-                    {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
+                    <span
+                      className="notice-separator"
+                      aria-hidden="true"
+                    >
+                      ◆
+                    </span>
+
+                    {notice}
+                  </span>
+                ))}
+              </div>
+
+              <div
+                className="notice-group"
+                aria-hidden="true"
+              >
+                {t.notices.map((notice, index) => (
+                  <span
+                    className="notice-item"
+                    key={`notice-b-${index}`}
+                  >
+                    <span
+                      className="notice-separator"
+                      aria-hidden="true"
+                    >
+                      ◆
+                    </span>
+
+                    {notice}
+                  </span>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section className="stats" aria-label="Hospital statistics">
+          <CountUpStat value={3} suffix="+" label={t.years} />
+          <CountUpStat
+            value={35}
+            suffix="+"
+            label={t.specialists}
+            delay={140}
+          />
+          <CountUpStat value={24} suffix="/7" label={t.support} delay={280} />
+        </section>
+<section className="quick section-pad" id="services">
+          <div className="section-intro centered">
+            <h2>{t.quickTitle}</h2>
+            <p>{t.quickP}</p>
+          </div>
+          <div className="quick-grid">
+            {t.services.map(([title, sub, icon], index) => (
+              <button
+                className={`quick-card q${index}`}
+                key={title}
+                onClick={() =>
+                  index === 0
+                    ? scrollTo("doctors")
+                    : index === 1
+                    ? openBooking()
+                    : index === 2
+                    ? openPortal()
+                    : null
+                }
+              >
+                <span className="quick-icon">
+                  <Icon name={icon} />
+                </span>
+                <span>
+                  <strong>{title}</strong>
+                  <small>{sub}</small>
+                </span>
+                <Icon name="arrow" size={19} />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="doctor-section section-pad" id="doctors">
+          <div className="doctor-heading">
+            <div className="section-intro">
+              <span className="kicker">{t.doctorsEyebrow}</span>
+              <h2>{t.doctorsTitle}</h2>
+              <p>{t.doctorsP}</p>
+            </div>
+            <div className="doctor-tools">
+              <button
+                className="see-list"
+                onClick={() => setDoctorListOpen(true)}
+              >
+                {lang === "en" ? "See full list" : "সম্পূর্ণ তালিকা"}
+                <Icon name="arrow" size={17} />
+              </button>
+            </div>
+          </div>
+          <div className="doctor-flow" aria-label="Scrolling doctor list">
+            <div className="doctor-track">
+              {flowDoctors.map((doctor, index) => (
+                <article
+                  className="doctor-flow-card"
+                  key={`${doctor.initials}-${index}`}
+                >
+                  <div className="doctor-photo">
+                    <DoctorPortrait doctor={doctor} alt={doctor.name[lang]} />
+                  </div>
+                  <div className="doctor-card-top">
+                    <span>{doctor.initials}</span>
+                    <b>{doctor.schedule[lang]}</b>
+                  </div>
+                  <h3>{doctor.name[lang]}</h3>
+                  <p>{doctor.role[lang]}</p>
+                  <small>{doctor.exp}</small>
+                  <em>{doctor.services[lang]}</em>
+                  <button
+                    className="doctor-book"
+                    onClick={() => openBooking(doctor)}
+                  >
+                    {t.book}
                     <Icon name="arrow" size={16} />
                   </button>
                 </article>
               ))}
             </div>
           </div>
+          {!filteredDoctors.length && (
+            <p className="no-results">{t.noDoctors}</p>
+          )}
         </section>
 
-        <FAQSection lang={lang} />
+        <section className="care section-pad">
+          <div className="section-intro">
+            <span className="kicker">{t.careEyebrow}</span>
+            <h2>{t.careTitle}</h2>
+            <p>{t.careP}</p>
+          </div>
+          <div className="department-grid">
+            {t.departments.map(([title, sub], index) => (
+              <button className="department" key={title} type="button" onClick={() => {
+                const ids = ["cardiology", "gynecology", "pediatrics", "medicine", "orthopedic", "diagnostics"];
+                openBooking(null, ids[index]);
+              }}>
+                <span className={`dept-symbol d${index}`}>
+                  {["♥", "✦", "☀", "＋", "⌁", "◉"][index]}
+                </span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{sub}</p>
+                </div>
+                <Icon name="arrow" size={18} />
+              </button>
+            ))}
+          </div>
+          <button className="text-link">
+            {t.explore}
+            <Icon name="arrow" size={18} />
+          </button>
+        </section>
 
+        <section className="package-section section-pad" id="packages">
+          <div className="package-panel">
+            <div className="package-copy">
+              <span className="kicker light">{t.packageEyebrow}</span>
+              <h2>{t.packageTitle}</h2>
+              <p>{t.packageP}</p>
+              <div className="package-features">
+                {[t.tests, t.reports, t.review].map((item) => (
+                  <span key={item}>
+                    <i>
+                      <Icon name="check" size={15} />
+                    </i>
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <button className="button yellow">
+                {t.packageButton}
+                <Icon name="arrow" size={18} />
+              </button>
+            </div>
+            <div className="package-art">
+              <div className="package-card">
+                <span>
+                  <Icon name="check" size={24} />
+                </span>
+                <small>{t.starts}</small>
+                <strong>{t.currency}</strong>
+                <p>
+                  {lang === "en"
+                    ? "Essential Health Check"
+                    : "এসেনশিয়াল হেলথ চেক"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
+        <section className="app-section section-pad" id="app">
+          <div className="app-copy">
+            <span className="app-pill">
+              <i />
+              {lang === "en"
+                ? "Bright Health mobile app"
+                : "ব্রাইট হেলথ মোবাইল অ্যাপ"}
+            </span>
+            <h2>
+              {lang === "en"
+                ? "Hospital care, closer than ever."
+                : "হাসপাতালের সেবা, আরও কাছে।"}
+            </h2>
+            <p>
+              {lang === "en"
+                ? "Book appointments, check reports, explore health packages and stay connected with Bright Health from your phone."
+                : "ফোন থেকেই অ্যাপয়েন্টমেন্ট বুকিং, রিপোর্ট দেখা, হেলথ প্যাকেজ ও ব্রাইট হেলথের সাথে দ্রুত যোগাযোগ করুন।"}
+            </p>
+            <div className="store-buttons">
+              <button aria-label="Download on the App Store">
+                <img
+                  src={asset("app-store-badge.webp")}
+                  alt="Download on the App Store"
+                />
+              </button>
+              <button aria-label="Get it on Google Play">
+                <img
+                  src={asset("google-play-badge.webp")}
+                  alt="Get it on Google Play"
+                />
+              </button>
+            </div>
+          </div>
+          <div className="app-visual">
+            <img
+              src={asset("app-phones.webp")}
+              alt="Bright Health app preview"
+              loading="lazy"
+            />
+          </div>
+        </section>
+
+        <section className="why section-pad" id="about">
+          <div className="why-visual">
+            <img
+              src={asset("hospital-building.webp")}
+              alt="Hospital entrance"
+              loading="lazy"
+            />
+            <div className="quote-card">
+              <span>“</span>
+              <p>
+                {lang === "en"
+                  ? "Every patient deserves to feel heard, informed and cared for."
+                  : "প্রতিটি রোগীর কথা মন দিয়ে শোনা, বোঝানো ও যত্ন পাওয়ার অধিকার আছে।"}
+              </p>
+            </div>
+          </div>
+          <div className="why-copy section-intro">
+            <span className="kicker">{t.whyEyebrow}</span>
+            <h2>{t.whyTitle}</h2>
+            <p>{t.whyP}</p>
+            <div className="reason-list">
+              {t.reasons.map(([title, sub], i) => (
+                <article key={title}>
+                  <span>0{i + 1}</span>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{sub}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <section className="contact-section section-pad" id="contact">
           <div className="contact-heading">
-            <span className="contact-eyebrow">
-              {lang === "en"
-                ? "Get In Touch"
-                : "যোগাযোগ করুন"}
-            </span>
-
+            <span className="kicker light">Contact</span>
             <h2>
-              {lang === "en"
-                ? "Have an idea?"
-                : "আপনার কোনো আইডিয়া আছে?"}
+              Get in <em>Touch</em>
             </h2>
-
-            <p className="contact-lead">
-              <strong>
-                MOLLICK SOFTWARE SOLUTIONS
-              </strong>{" "}
-              {lang === "en"
-                ? "builds mobile apps, web platforms, backend systems, and bespoke software."
-                : "মোবাইল অ্যাপ, ওয়েব প্ল্যাটফর্ম, ব্যাকএন্ড সিস্টেম এবং কাস্টম সফটওয়্যার তৈরি করে।"}
-              <br />
-              <span>
-                {lang === "en"
-                  ? "Tell us about your project and we’ll get back to you."
-                  : "আপনার প্রজেক্ট সম্পর্কে জানান, আমরা দ্রুত আপনার সাথে যোগাযোগ করব।"}
-              </span>
-            </p>
           </div>
-
-          <div className="contact-form-card">
+          <div className="contact-layout">
+            <div className="contact-info">
+              <a href={`tel:${HOTLINE}`}>
+                <Icon name="phone" size={21} />
+                <span>
+                  {HOTLINE}{" "}
+                  <small>{lang === "en" ? "Hotline" : "হটলাইন"}</small>
+                </span>
+              </a>
+              <a href={MAP_URL} target="_blank" rel="noreferrer">
+                <Icon name="pin" size={21} />
+                <span>{t.address}</span>
+              </a>
+              <div className="contact-map-card">
+                <div className="mini-map" aria-hidden="true">
+                  <span className="map-road main" />
+                  <span className="map-road cross" />
+                  <span className="map-dot">
+                    <Icon name="pin" size={18} />
+                  </span>
+                </div>
+                <div>
+                  <strong>
+                    {lang === "en"
+                      ? "Find us on Google Map"
+                      : "গুগল ম্যাপে দেখুন"}
+                  </strong>
+                  <p>{t.address}</p>
+                  <a href={MAP_URL} target="_blank" rel="noreferrer">
+                    {t.directions}
+                    <Icon name="arrow" size={16} />
+                  </a>
+                </div>
+              </div>
+            </div>
             <form
             className="contact-form"
             onSubmit={async event => {
@@ -4207,10 +4565,12 @@ export default function App() {
               const formData =
                 new FormData(form)
 
+
               const name =
                 String(
                   formData.get('name') || ''
                 ).trim()
+
 
               const phone =
                 String(
@@ -4219,10 +4579,12 @@ export default function App() {
                   .replace(/\D/g, '')
                   .slice(0, 11)
 
+
               const message =
                 String(
                   formData.get('message') || ''
                 ).trim()
+
 
               const showFeedback = (
                 type,
@@ -4237,6 +4599,7 @@ export default function App() {
                 feedback.className =
                   `contact-feedback ${type}`
               }
+
 
               // ======================================
               // REQUIRED VALIDATION
@@ -4258,6 +4621,7 @@ export default function App() {
                 return
               }
 
+
               // Bangladesh mobile:
               // exactly 11 digits
               // 013 - 019
@@ -4276,6 +4640,7 @@ export default function App() {
                 return
               }
 
+
               if (name.length > 100) {
 
                 showFeedback(
@@ -4287,6 +4652,7 @@ export default function App() {
 
                 return
               }
+
 
               if (message.length > 2000) {
 
@@ -4300,10 +4666,12 @@ export default function App() {
                 return
               }
 
+
               if (submitButton) {
                 submitButton.disabled =
                   true
               }
+
 
               showFeedback(
                 'sending',
@@ -4312,6 +4680,7 @@ export default function App() {
                   : 'পাঠানো হচ্ছে...'
               )
 
+
               try {
 
                 const database =
@@ -4319,11 +4688,13 @@ export default function App() {
                     firebaseApp
                   )
 
+
                 const submissionsRef =
                   realtimeDatabase.ref(
                     database,
                     'Get_in_touch'
                   )
+
 
                 await realtimeDatabase.push(
                   submissionsRef,
@@ -4336,7 +4707,9 @@ export default function App() {
                   }
                 )
 
+
                 form.reset()
+
 
                 // Clear old inline feedback
                 if (feedback) {
@@ -4344,6 +4717,7 @@ export default function App() {
                   feedback.className =
                     'contact-feedback'
                 }
+
 
                 // ======================================
                 // PREMIUM SUCCESS TOAST
@@ -4353,6 +4727,7 @@ export default function App() {
                   document.getElementById(
                     'contact-success-toast'
                   )
+
 
                 if (!toast) {
 
@@ -4383,6 +4758,7 @@ export default function App() {
 
                 }
 
+
                 toast.innerHTML =
                   '<span class="contact-success-toast__icon">✓</span>' +
                   '<span class="contact-success-toast__copy">' +
@@ -4396,11 +4772,12 @@ export default function App() {
                     '<small>' +
                       (
                         lang === 'en'
-                          ? 'Thank you for contacting Mollick Software Solutions. We will get back to you soon.'
-                          : 'Mollick Software Solutions-এর সাথে যোগাযোগ করার জন্য ধন্যবাদ। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।'
+                          ? 'Thank you for contacting Bright Health. We will get back to you soon.'
+                          : 'ব্রাইট হেলথের সাথে যোগাযোগ করার জন্য ধন্যবাদ। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।'
                       ) +
                     '</small>' +
                   '</span>'
+
 
                 // Restart animation if needed
                 toast.classList.remove(
@@ -4413,6 +4790,7 @@ export default function App() {
                   'is-visible'
                 )
 
+
                 // Clear previous timers
                 if (
                   window
@@ -4424,6 +4802,7 @@ export default function App() {
                   )
                 }
 
+
                 if (
                   window
                     .__brightHealthContactScrollTimer
@@ -4433,6 +4812,7 @@ export default function App() {
                       .__brightHealthContactScrollTimer
                   )
                 }
+
 
                 // ======================================
                 // SHOW TOAST FIRST,
@@ -4454,6 +4834,7 @@ export default function App() {
                       700
                     )
 
+
                 // ======================================
                 // AUTO HIDE TOAST
                 // ======================================
@@ -4466,6 +4847,7 @@ export default function App() {
                         toast.classList.remove(
                           'is-visible'
                         )
+
 
                         window.setTimeout(
                           () => {
@@ -4491,6 +4873,7 @@ export default function App() {
                   error
                 )
 
+
                 showFeedback(
                   'error',
                   lang === 'en'
@@ -4509,302 +4892,120 @@ export default function App() {
             }}
           >
 
-            <div className="contact-form-grid">
-              <label className="contact-field">
-                <span>
-                  {lang === "en"
-                    ? "First Name *"
-                    : "নাম *"}
-                </span>
+            <input
+              name="name"
+              required
+              maxLength={100}
+              autoComplete="name"
+              placeholder={t.name}
+              aria-required="true"
+            />
 
-                <input
-                  name="name"
-                  required
-                  maxLength={100}
-                  autoComplete="name"
-                  aria-label={
-                    lang === "en"
-                      ? "First Name"
-                      : "নাম"
-                  }
-                  aria-required="true"
-                />
-              </label>
 
-              <label className="contact-field">
-                <span>
-                  {lang === "en"
-                    ? "Mobile *"
-                    : "মোবাইল নম্বর *"}
-                </span>
+            <input
+              name="phone"
+              type="tel"
+              inputMode="numeric"
+              required
+              minLength={11}
+              maxLength={11}
+              pattern="01[3-9][0-9]{8}"
+              autoComplete="tel"
+              placeholder={t.phone}
+              aria-required="true"
 
-                <input
-                  name="phone"
-                  type="tel"
-                  inputMode="numeric"
-                  required
-                  minLength={11}
-                  maxLength={11}
-                  pattern="01[3-9][0-9]{8}"
-                  autoComplete="tel"
-                  aria-label={
-                    lang === "en"
-                      ? "Mobile"
-                      : "মোবাইল নম্বর"
-                  }
-                  aria-required="true"
-                  onInput={event => {
-                    event.currentTarget.value =
-                      String(
-                        event.currentTarget.value ||
-                        ""
-                      )
-                        .replace(/\D/g, "")
-                        .slice(0, 11)
-                  }}
-                />
-              </label>
-            </div>
+              onInput={event => {
+                event.currentTarget.value =
+                  String(
+                    event.currentTarget.value ||
+                    ''
+                  )
+                    .replace(/\D/g, '')
+                    .slice(0, 11)
+              }}
+            />
 
-            <label className="contact-field contact-field-message">
-              <span>
-                {lang === "en"
-                  ? "Tell us how we can help *"
-                  : "আমরা কীভাবে সাহায্য করতে পারি *"}
-              </span>
 
-              <textarea
-                name="message"
-                required
-                maxLength={2000}
-                aria-label={
-                  lang === "en"
-                    ? "Tell us how we can help"
-                    : "আমরা কীভাবে সাহায্য করতে পারি"
-                }
-                aria-required="true"
-              />
-            </label>
+            <textarea
+              name="message"
+              required
+              maxLength={2000}
+              placeholder={
+                lang === 'en'
+                  ? 'Message'
+                  : 'মেসেজ'
+              }
+              aria-required="true"
+            />
 
-            <div className="contact-form-actions">
-              <button
-                className="contact-send-button"
-                type="submit"
-              >
-                {lang === "en"
-                  ? "Send"
-                  : "পাঠান"}
-                <Icon name="arrow" size={17} />
-              </button>
-            </div>
+
+            <button
+              className="button yellow"
+              type="submit"
+            >
+              {lang === 'en'
+                ? 'Submit'
+                : 'সাবমিট'}
+            </button>
+
 
             <p
               className="contact-feedback"
               data-contact-feedback
               aria-live="polite"
             />
-</form>
-          </div>
 
-          <div className="contact-direct-links">
-            <a
-              className="contact-direct-item"
-              href="tel:01617083892"
-            >
-              <span>
-                {lang === "en" ? "Phone:" : "ফোন:"}
-              </span>
-              <strong>01617083892</strong>
-            </a>
-
-            <a
-              className="contact-direct-item"
-              href="https://wa.me/8801818225467"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>
-                {lang === "en"
-                  ? "WhatsApp:"
-                  : "হোয়াটসঅ্যাপ:"}
-              </span>
-              <strong>01818225467</strong>
-            </a>
+          </form>
           </div>
         </section>
       </main>
 
-      <footer className="footer mollick-footer">
-        <div className="footer-main mollick-footer-main">
-          <div className="footer-brand mollick-footer-brand">
-            <a
-              className="brand inverted"
-              href="#home"
-              aria-label="Mollick Software Solutions home"
-            >
-              <img
-                src={asset("mollick-icon-white.png")}
-                alt=""
-              />
+      <footer className="footer">
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a className="brand inverted" href="#home" aria-label="Mollick Software Solutions home">
+              <img src={asset("mollick-icon-white.png")} alt="" />
               <span>
                 <strong>MOLLICK</strong>
                 <small>SOFTWARE SOLUTIONS</small>
               </span>
             </a>
-
-            <p>
-              {lang === "en"
-                ? "Custom software, web platforms, mobile apps and connected digital solutions built around real business needs."
-                : "বাস্তব ব্যবসায়িক প্রয়োজন অনুযায়ী কাস্টম সফটওয়্যার, ওয়েব প্ল্যাটফর্ম, মোবাইল অ্যাপ ও সংযুক্ত ডিজিটাল সমাধান তৈরি করি।"}
-            </p>
-
-            <div className="mollick-footer-contact-list">
-              <a href="tel:01617083892">
-                <span>{lang === "en" ? "Phone" : "ফোন"}</span>
-                <strong>01617083892</strong>
-              </a>
-
-              <a
-                href="https://wa.me/8801818225467"
-                target="_blank"
-                rel="noreferrer"
+            <p>{t.footerP}</p>
+            <a href={`tel:${HOTLINE}`}>{HOTLINE}</a>
+          </div>
+          <div>
+            <h3>{t.footerHeadings[0]}</h3>
+            {t.hospitalLinks.map((x, i) => (
+              <button
+                key={x}
+                onClick={() => i === 0 ? window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }) : scrollTo(footerHospitalTargets[i - 1])}
               >
-                <span>WhatsApp</span>
-                <strong>01818225467</strong>
-              </a>
-
-              <a href="mailto:mollicksoftwaresolutions@gmail.com">
-                <span>{lang === "en" ? "Email" : "ইমেইল"}</span>
-                <strong>mollicksoftwaresolutions@gmail.com</strong>
-              </a>
-            </div>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Quick Links" : "দ্রুত লিংক"}</h3>
-
-            <button
-              type="button"
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  left: 0,
-                  behavior: "smooth",
-                })
-              }
-            >
-              {lang === "en" ? "Home" : "হোম"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("packages")}
-            >
-              {lang === "en"
-                ? "Our Packages"
-                : "আমাদের প্যাকেজসমূহ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("services")}
-            >
-              {lang === "en"
-                ? "What We Do"
-                : "আমরা কী করি"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("about")}
-            >
-              {lang === "en"
-                ? "Our Process"
-                : "কাজের প্রক্রিয়া"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("reviews")}
-            >
-              {lang === "en" ? "Reviews" : "রিভিউ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-            </button>
+          <div>
+            <h3>{t.footerHeadings[1]}</h3>
+            {t.patientLinks.map((x, i) => (
+              <button key={x} onClick={footerPatientActions[i]}>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Services" : "সেবাসমূহ"}</h3>
-
-            <span>
-              {lang === "en"
-                ? "Mobile Application Development"
-                : "মোবাইল অ্যাপ্লিকেশন ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Web Platform Development"
-                : "ওয়েব প্ল্যাটফর্ম ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Backend & API Systems"
-                : "ব্যাকএন্ড ও API সিস্টেম"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Management Software"
-                : "ম্যানেজমেন্ট সফটওয়্যার"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "IoT Solutions"
-                : "IoT সলিউশন"}
-            </span>
-          </div>
-
-          <div className="footer-cta mollick-footer-cta">
-            <h3>
-              {lang === "en"
-                ? "Have a project in mind?"
-                : "নতুন কোনো প্রজেক্ট আছে?"}
-            </h3>
-
-            <p>
-              {lang === "en"
-                ? "Tell us what you want to build. We’ll discuss the right approach with you."
-                : "আপনি কী তৈরি করতে চান আমাদের জানান। আমরা আপনার সাথে উপযুক্ত সমাধান নিয়ে আলোচনা করব।"}
-            </p>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-              <span aria-hidden="true">→</span>
-            </button>
+          <div className="footer-cta">
+            <h3>{t.always}</h3>
+            <p>{t.alwaysP}</p>
+            <a href={`tel:${HOTLINE}`}>
+              <Icon name="phone" size={17} />
+              {HOTLINE}
+            </a>
           </div>
         </div>
-
-        <div className="footer-bottom mollick-footer-bottom">
-          <span>
-            {lang === "en"
-              ? "© 2026 Mollick Software Solutions. All rights reserved."
-              : "© ২০২৬ Mollick Software Solutions. সর্বস্বত্ব সংরক্ষিত।"}
-          </span>
+        <div className="footer-bottom">
+          <span>{t.copyright}</span>
+          <button onClick={() => setLang(lang === "en" ? "bn" : "en")}>
+            {t.language}
+          </button>
         </div>
       </footer>
 
@@ -5264,6 +5465,7 @@ export default function App() {
 
                                  </div>
 
+
                                  {clinicalNote.diagnosis && (
                                    <p className="portal-prescription-line">
 
@@ -5280,6 +5482,7 @@ export default function App() {
                                    </p>
                                  )}
 
+
                                  {clinicalNote.symptoms && (
                                    <p className="portal-prescription-line">
 
@@ -5295,6 +5498,7 @@ export default function App() {
 
                                    </p>
                                  )}
+
 
                                  {Array.isArray(
                                    clinicalNote.prescriptionItems
@@ -5323,6 +5527,7 @@ export default function App() {
                                                    : "ওষুধ")}
                                              </strong>
 
+
                                              <span>
                                                {[
                                                  item.dose,
@@ -5332,6 +5537,7 @@ export default function App() {
                                                  .filter(Boolean)
                                                  .join(" · ")}
                                              </span>
+
 
                                              {item.instruction && (
                                                <b>
@@ -5347,6 +5553,7 @@ export default function App() {
                                      </div>
 
                                    )}
+
 
                                  {clinicalNote.prescription && (
                                    <p className="portal-prescription-line">
@@ -5364,6 +5571,7 @@ export default function App() {
                                    </p>
                                  )}
 
+
                                  {clinicalNote.advice && (
                                    <p className="portal-prescription-line">
 
@@ -5379,6 +5587,7 @@ export default function App() {
 
                                    </p>
                                  )}
+
 
                                  {clinicalNote.followUpDate && (
                                    <div className="portal-prescription-followup">
@@ -5398,6 +5607,7 @@ export default function App() {
 
                                    </div>
                                  )}
+
 
                                  <button
                                    type="button"

@@ -1,7 +1,33 @@
-import { memo, useEffect, useRef, useState } from "react";
-import "./ReviewsSection.css";
+const fs = require("fs");
+const path = require("path");
 
-const reviews = [
+const root = process.cwd();
+const jsxPath = path.join(root, "src", "ReviewsSection.jsx");
+const cssPath = path.join(root, "src", "ReviewsSection.css");
+
+function ensure(file, label) {
+  if (!fs.existsSync(file)) throw new Error(`${label} not found: ${file}`);
+}
+
+function backup(file, backupRoot) {
+  const rel = path.relative(root, file);
+  const dest = path.join(backupRoot, rel);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(file, dest);
+}
+
+ensure(jsxPath, "ReviewsSection.jsx");
+ensure(cssPath, "ReviewsSection.css");
+
+const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+const backupRoot = path.join(root, ".mollick-backups", `reviews-7-projects-${stamp}`);
+backup(jsxPath, backupRoot);
+backup(cssPath, backupRoot);
+
+let jsx = fs.readFileSync(jsxPath, "utf8");
+let css = fs.readFileSync(cssPath, "utf8");
+
+const reviewsBlock = `const reviews = [
   {
     id: 1,
     projectEn: "Bright Health",
@@ -107,113 +133,23 @@ const reviews = [
     quoteBn: "JoruriCode প্রজেক্টে জরুরি পরিস্থিতির ফ্লো, সহজ ব্যবহার এবং নির্ভরযোগ্যতা নিয়ে খুব সতর্কভাবে কাজ করা প্রয়োজন ছিল। টিমটি পরিকল্পিতভাবে এসব বিষয় বাস্তবায়ন করেছে এবং ভেতরের টেকনিক্যাল জটিলতা সামলে ব্যবহারকারীর অভিজ্ঞতা সহজ রেখেছে।",
     initials: "JC",
   },
-];
+];`;
 
-function ReviewsSectionComponent({ lang = "en" }) {
-  const isBn = lang === "bn";
-  const [active, setActive] = useState(0);
-  const sectionRef = useRef(null);
+const reviewsRegex = /const reviews\s*=\s*\[[\s\S]*?\];\s*\n\s*function ReviewsSectionComponent/;
+if (!reviewsRegex.test(jsx)) {
+  throw new Error("Could not find the reviews data block in src/ReviewsSection.jsx");
+}
+jsx = jsx.replace(reviewsRegex, `${reviewsBlock}\n\nfunction ReviewsSectionComponent`);
 
-  const previous = () => {
-    setActive((current) =>
-      current === 0 ? reviews.length - 1 : current - 1
-    );
-  };
+const oldBrandRegex = /<div className="mollick-reviews__brand">[\s\S]*?<\/div>\s*\n\s*<div className="mollick-reviews__divider" \/>/;
+if (!oldBrandRegex.test(jsx)) {
+  throw new Error("Could not find the review brand block in src/ReviewsSection.jsx");
+}
 
-  const next = () => {
-    setActive((current) =>
-      current === reviews.length - 1 ? 0 : current + 1
-    );
-  };
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return undefined;
-
-    const heading = section.querySelector(".mollick-reviews__heading");
-    const card = section.querySelector(".mollick-reviews__card");
-
-    const targets = [heading, card].filter(Boolean);
-
-    targets.forEach((element, index) => {
-      element.dataset.reveal = index === 0 ? "text" : "visual";
-      if (index === 1) element.dataset.revealDelay = "380";
-      element.classList.remove("is-revealed");
-    });
-
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach((element) =>
-        element.classList.add("is-revealed")
-      );
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const delay = Number(
-            entry.target.dataset.revealDelay || 0
-          );
-
-          window.setTimeout(() => {
-            entry.target.classList.add("is-revealed");
-          }, delay);
-
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "0px 0px -12% 0px",
-      }
-    );
-
-    targets.forEach((element) => observer.observe(element));
-
-    return () => observer.disconnect();
-  }, []);
-
-  const review = reviews[active];
-
-  return (
-    <section
-      ref={sectionRef}
-      className="mollick-reviews"
-      id="reviews"
-      aria-labelledby="mollick-reviews-title"
-    >
-      <div className="mollick-reviews__heading">
-        <span>
-          {isBn ? "ক্লায়েন্ট মতামত" : "Testimonials"}
-        </span>
-
-        <h2 id="mollick-reviews-title">
-          {isBn ? "রিভিউ" : "Reviews"}
-        </h2>
-
-        <p>
-          {isBn
-            ? "আমাদের সাথে কাজ করার অভিজ্ঞতা সম্পর্কে ক্লায়েন্টদের মতামত।"
-            : "Hear directly from the clients we've partnered with on their experience working with our team."}
-        </p>
-      </div>
-
-      <div className="mollick-reviews__card">
-        <button
-          className="mollick-reviews__arrow is-left"
-          type="button"
-          onClick={previous}
-          aria-label={isBn ? "আগের রিভিউ" : "Previous review"}
-        >
-          ‹
-        </button>
-
-        <div className="mollick-reviews__brand">
+const newBrandBlock = `<div className="mollick-reviews__brand">
           <img
             className="mollick-reviews__logo"
-            src={`${import.meta.env.BASE_URL}${review.logo}`}
+            src={\`\${import.meta.env.BASE_URL}\${review.logo}\`}
             alt={isBn ? review.projectBn : review.projectEn}
             loading="lazy"
             decoding="async"
@@ -223,51 +159,62 @@ function ReviewsSectionComponent({ lang = "en" }) {
           </strong>
         </div>
 
-        <div className="mollick-reviews__divider" />
+        <div className="mollick-reviews__divider" />`;
 
-        <div className="mollick-reviews__content">
-          <div className="mollick-reviews__quote-mark">“</div>
+jsx = jsx.replace(oldBrandRegex, newBrandBlock);
 
-          <blockquote>
-            {isBn ? review.quoteBn : review.quoteEn}
-          </blockquote>
-
-          <div className="mollick-reviews__person">
-            <div className="mollick-reviews__avatar">
-              {review.initials}
-            </div>
-
-            <div>
-              <strong>
-                {isBn ? review.nameBn : review.nameEn}
-              </strong>
-              <span>
-                {isBn ? review.roleBn : review.roleEn}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <button
-          className="mollick-reviews__arrow is-right"
-          type="button"
-          onClick={next}
-          aria-label={isBn ? "পরের রিভিউ" : "Next review"}
-        >
-          ›
-        </button>
-      </div>
-
-      <div className="mollick-reviews__dots" aria-hidden="true">
-        {reviews.map((item, index) => (
-          <span
-            key={item.id}
-            className={index === active ? "is-active" : ""}
-          />
-        ))}
-      </div>
-    </section>
-  );
+const markerStart = "/* === MOLLICK PROJECT REVIEW LOGOS START === */";
+const markerEnd = "/* === MOLLICK PROJECT REVIEW LOGOS END === */";
+const logoCss = `${markerStart}
+.mollick-reviews__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-width: 0;
 }
 
-export const ReviewsSection = memo(ReviewsSectionComponent);
+.mollick-reviews__logo {
+  display: block;
+  width: min(250px, 82%);
+  height: 190px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.mollick-reviews__brand strong {
+  color: #ffffff;
+  text-align: center;
+  font-size: clamp(18px, 1.7vw, 26px);
+  line-height: 1.2;
+}
+
+@media (max-width: 820px) {
+  .mollick-reviews__logo {
+    width: min(220px, 76vw);
+    height: 165px;
+  }
+}
+${markerEnd}`;
+
+const start = css.indexOf(markerStart);
+const end = css.indexOf(markerEnd);
+if (start !== -1 && end !== -1 && end > start) {
+  css = css.slice(0, start) + logoCss + css.slice(end + markerEnd.length);
+} else {
+  css = `${css.trim()}\n\n${logoCss}\n`;
+}
+
+fs.writeFileSync(jsxPath, jsx, "utf8");
+fs.writeFileSync(cssPath, css, "utf8");
+
+console.log("");
+console.log("7 project reviews added successfully.");
+console.log("Updated: src/ReviewsSection.jsx + src/ReviewsSection.css");
+console.log(`Backup: ${backupRoot}`);
+console.log("Now run: npm run dev -- --host");

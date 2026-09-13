@@ -21,7 +21,6 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { WhatWeDoSection } from "./WhatWeDoSection";
 import { HomeAboutSection } from "./HomeAboutSection";
 import { ReviewsSection } from "./ReviewsSection";
-import { FAQSection } from "./FAQSection";
 import * as realtimeDatabase from 'firebase/database'
 import { onSnapshot as firestoreOnSnapshot } from 'firebase/firestore'
 
@@ -60,6 +59,7 @@ const API_BASE_URL =
   "https://bright-hospital-otp-server.onrender.com";
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 
+
 const formatClinicalDate = (value, lang = "en") => {
   if (!value) return "-";
 
@@ -85,6 +85,7 @@ const formatClinicalDate = (value, lang = "en") => {
   );
 };
 
+
 const downloadClinicalNotePdf = async ({
   note,
   booking,
@@ -108,12 +109,14 @@ const downloadClinicalNotePdf = async ({
     "z-index:-10"
   ].join(";");
 
+
   const medicines =
     Array.isArray(
       note.prescriptionItems
     )
       ? note.prescriptionItems
       : [];
+
 
   const safe = (value) =>
     String(value ?? "")
@@ -122,6 +125,7 @@ const downloadClinicalNotePdf = async ({
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
+
 
   const medicinesHtml =
     medicines.length
@@ -189,6 +193,7 @@ const downloadClinicalNotePdf = async ({
           </div>
         `;
 
+
   root.innerHTML = `
     <div style="
       padding:46px 52px;
@@ -244,6 +249,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           text-align:right;
         ">
@@ -268,6 +274,7 @@ const downloadClinicalNotePdf = async ({
         </div>
 
       </div>
+
 
       <div style="
         display:grid;
@@ -302,6 +309,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           padding:14px;
           background:#f3f8f6;
@@ -328,6 +336,7 @@ const downloadClinicalNotePdf = async ({
           </div>
 
         </div>
+
 
         <div style="
           padding:14px;
@@ -357,6 +366,7 @@ const downloadClinicalNotePdf = async ({
 
         </div>
 
+
         <div style="
           padding:14px;
           background:#f3f8f6;
@@ -385,6 +395,7 @@ const downloadClinicalNotePdf = async ({
 
       </div>
 
+
       ${note.diagnosis
         ? `
           <div style="
@@ -411,6 +422,7 @@ const downloadClinicalNotePdf = async ({
         `
         : ""
       }
+
 
       ${note.symptoms
         ? `
@@ -439,6 +451,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       <div style="
         margin-top:26px;
         padding:20px;
@@ -459,6 +472,7 @@ const downloadClinicalNotePdf = async ({
         ${medicinesHtml}
 
       </div>
+
 
       ${note.prescription
         ? `
@@ -487,6 +501,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       ${note.advice
         ? `
           <div style="
@@ -513,6 +528,7 @@ const downloadClinicalNotePdf = async ({
         `
         : ""
       }
+
 
       ${note.followUpDate
         ? `
@@ -547,6 +563,7 @@ const downloadClinicalNotePdf = async ({
         : ""
       }
 
+
       <div style="
         display:flex;
         justify-content:space-between;
@@ -576,9 +593,11 @@ const downloadClinicalNotePdf = async ({
     </div>
   `;
 
+
   document.body.appendChild(
     root
   );
+
 
   try {
 
@@ -588,10 +607,12 @@ const downloadClinicalNotePdf = async ({
       await document.fonts.ready;
     }
 
+
     const logo =
       root.querySelector(
         "#clinical-pdf-logo"
       );
+
 
     if (
       logo &&
@@ -617,6 +638,7 @@ const downloadClinicalNotePdf = async ({
 
     }
 
+
     const canvas =
       await html2canvas(
         root,
@@ -628,6 +650,7 @@ const downloadClinicalNotePdf = async ({
         }
       );
 
+
     const pdf =
       new jsPDF(
         "p",
@@ -635,27 +658,34 @@ const downloadClinicalNotePdf = async ({
         "a4"
       );
 
+
     const pageWidth =
       pdf.internal.pageSize
         .getWidth();
+
 
     const pageHeight =
       pdf.internal.pageSize
         .getHeight();
 
+
     const margin = 8;
+
 
     const contentWidth =
       pageWidth -
       margin * 2;
 
+
     const contentHeight =
       pageHeight -
       margin * 2;
 
+
     const pxPerMm =
       canvas.width /
       contentWidth;
+
 
     const sliceHeight =
       Math.floor(
@@ -663,8 +693,10 @@ const downloadClinicalNotePdf = async ({
         pxPerMm
       );
 
+
     let offset = 0;
     let page = 0;
+
 
     while (
       offset <
@@ -678,21 +710,26 @@ const downloadClinicalNotePdf = async ({
           offset
         );
 
+
       const slice =
         document.createElement(
           "canvas"
         );
 
+
       slice.width =
         canvas.width;
 
+
       slice.height =
         currentHeight;
+
 
       const ctx =
         slice.getContext(
           "2d"
         );
+
 
       ctx.drawImage(
         canvas,
@@ -706,11 +743,13 @@ const downloadClinicalNotePdf = async ({
         currentHeight
       );
 
+
       if (
         page > 0
       ) {
         pdf.addPage();
       }
+
 
       pdf.addImage(
         slice.toDataURL(
@@ -727,11 +766,14 @@ const downloadClinicalNotePdf = async ({
         "FAST"
       );
 
+
       offset +=
         currentHeight;
 
+
       page += 1;
     }
+
 
     const fileDate =
       String(
@@ -743,6 +785,7 @@ const downloadClinicalNotePdf = async ({
           /[^0-9A-Za-z-]/g,
           "-"
         );
+
 
     pdf.save(
       "Bright-Health-Prescription-" +
@@ -757,6 +800,7 @@ const downloadClinicalNotePdf = async ({
 
   }
 };
+
 
 const normalizePhoneNumber = (value) =>
   String(value || "")
@@ -779,72 +823,62 @@ const softwarePackages = [
   {
     en: "Hospital Management System",
     bn: "হাসপাতাল ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/hospital-management.webp`,
-    altEn: "Hospital management software dashboard",
-    altBn: "হাসপাতাল ম্যানেজমেন্ট সফটওয়্যার ড্যাশবোর্ড",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "ERP System",
     bn: "ERP সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/erp-system.webp`,
-    altEn: "ERP business management dashboard",
-    altBn: "ERP ব্যবসা ব্যবস্থাপনা ড্যাশবোর্ড",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "School, College, Madrasa Website",
     bn: "স্কুল, কলেজ ও মাদ্রাসা ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/education-website.webp`,
-    altEn: "Education website and learning portal",
-    altBn: "শিক্ষা প্রতিষ্ঠান ওয়েবসাইট ও লার্নিং পোর্টাল",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Business Management System",
     bn: "বিজনেস ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/business-management.webp`,
-    altEn: "Business management analytics workspace",
-    altBn: "বিজনেস ম্যানেজমেন্ট অ্যানালিটিক্স ওয়ার্কস্পেস",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Club & Organisation Websites",
     bn: "ক্লাব ও সংগঠন ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/club-organisation.webp`,
-    altEn: "Club and organisation community website",
-    altBn: "ক্লাব ও সংগঠনের কমিউনিটি ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Mobile Application Android",
     bn: "অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/android-app.webp`,
-    altEn: "Premium Android mobile application interface",
-    altBn: "প্রিমিয়াম অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Mobile Application iOS",
     bn: "iOS মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ios-app.webp`,
-    altEn: "Premium iOS mobile application interface",
-    altBn: "প্রিমিয়াম iOS মোবাইল অ্যাপ্লিকেশন",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Introducing Website",
     bn: "পরিচিতিমূলক ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/introducing-website.webp`,
-    altEn: "Corporate introduction website",
-    altBn: "কর্পোরেট পরিচিতিমূলক ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Online News Portal",
     bn: "অনলাইন নিউজ পোর্টাল",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/online-news.webp`,
-    altEn: "Online news portal and digital newsroom",
-    altBn: "অনলাইন নিউজ পোর্টাল ও ডিজিটাল নিউজরুম",
+    amountEn: "2,00,000 Tk",
+    amountBn: "২,০০,০০০ টাকা",
   },
   {
     en: "E-commerce Website",
     bn: "ই-কমার্স ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ecommerce-website.webp`,
-    altEn: "Premium e-commerce shopping website",
-    altBn: "প্রিমিয়াম ই-কমার্স শপিং ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
 ];
 
@@ -1367,6 +1401,7 @@ const appointmentDepartments = [
   },
 ];
 
+
 const dayLabels = {
   en: [
     'Sunday',
@@ -1388,6 +1423,7 @@ const dayLabels = {
     'শনিবার'
   ]
 }
+
 
 const scheduleDayMap = {
   sun: 0,
@@ -1415,6 +1451,7 @@ const scheduleDayMap = {
   saturday: 6
 }
 
+
 const scheduleDateValue = date => {
   const year = date.getFullYear()
 
@@ -1431,11 +1468,13 @@ const scheduleDateValue = date => {
   return `${year}-${month}-${day}`
 }
 
+
 const normalizeDoctorSchedule = value =>
   String(value || '')
     .replace(/–|—/g, '-')
     .replace(/\s+/g, ' ')
     .trim()
+
 
 const parseScheduleDay = value => {
 
@@ -1443,6 +1482,7 @@ const parseScheduleDay = value => {
     String(value || '')
       .toLowerCase()
       .replace(/[^a-z]/g, '')
+
 
   return Object.prototype
     .hasOwnProperty.call(
@@ -1453,6 +1493,7 @@ const parseScheduleDay = value => {
       : null
 }
 
+
 const parseScheduleDays = value => {
 
   let text =
@@ -1460,6 +1501,7 @@ const parseScheduleDays = value => {
       .toLowerCase()
       .replace(/\bevery\b/g, ' ')
       .trim()
+
 
   if (/\bdaily\b/.test(text)) {
 
@@ -1469,7 +1511,9 @@ const parseScheduleDays = value => {
 
   }
 
+
   const result = []
+
 
   /*
      Mon - Thu
@@ -1478,10 +1522,12 @@ const parseScheduleDays = value => {
   const rangePattern =
     /\b(sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\s*-\s*(sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\b/i
 
+
   const rangeMatch =
     text.match(
       rangePattern
     )
+
 
   if (rangeMatch) {
 
@@ -1495,6 +1541,7 @@ const parseScheduleDays = value => {
         rangeMatch[2]
       )
 
+
     if (
       start !== null &&
       end !== null
@@ -1502,6 +1549,7 @@ const parseScheduleDays = value => {
 
       let current =
         start
+
 
       for (
         let i = 0;
@@ -1519,16 +1567,19 @@ const parseScheduleDays = value => {
           )
         }
 
+
         if (
           current === end
         ) {
           break
         }
 
+
         current =
           (current + 1) % 7
       }
     }
+
 
     text =
       text.replace(
@@ -1536,6 +1587,7 @@ const parseScheduleDays = value => {
         ' '
       )
   }
+
 
   /*
      Sun, Mon & Tue
@@ -1546,12 +1598,14 @@ const parseScheduleDays = value => {
       /\b(?:sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:nesday)?|thu(?:r|rs|rsday|ursday)?|fri(?:day)?|sat(?:urday)?)\b/gi
     ) || []
 
+
   matches.forEach(token => {
 
     const day =
       parseScheduleDay(
         token
       )
+
 
     if (
       day !== null &&
@@ -1562,8 +1616,10 @@ const parseScheduleDays = value => {
 
   })
 
+
   return result
 }
+
 
 const parseClockMinutes = (
   value,
@@ -1577,19 +1633,23 @@ const parseClockMinutes = (
         /^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i
       )
 
+
   if (!match) {
     return null
   }
+
 
   let hour =
     Number(
       match[1]
     )
 
+
   const minute =
     Number(
       match[2] || 0
     )
+
 
   const meridiem =
     String(
@@ -1597,6 +1657,7 @@ const parseClockMinutes = (
       inheritedMeridiem ||
       ''
     ).toUpperCase()
+
 
   if (
     hour < 1 ||
@@ -1610,12 +1671,14 @@ const parseClockMinutes = (
     return null
   }
 
+
   if (
     meridiem === 'AM' &&
     hour === 12
   ) {
     hour = 0
   }
+
 
   if (
     meridiem === 'PM' &&
@@ -1624,11 +1687,13 @@ const parseClockMinutes = (
     hour += 12
   }
 
+
   return (
     hour * 60 +
     minute
   )
 }
+
 
 const formatClockMinutes = minutes => {
 
@@ -1637,25 +1702,31 @@ const formatClockMinutes = minutes => {
       minutes / 60
     )
 
+
   const minute =
     minutes % 60
+
 
   const meridiem =
     hour24 >= 12
       ? 'PM'
       : 'AM'
 
+
   let hour12 =
     hour24 % 12
+
 
   if (hour12 === 0) {
     hour12 = 12
   }
 
+
   return (
     `${hour12}:${String(minute).padStart(2, '0')} ${meridiem}`
   )
 }
+
 
 const buildThirtyMinuteSlots = (
   start,
@@ -1670,7 +1741,9 @@ const buildThirtyMinuteSlots = (
     return []
   }
 
+
   const result = []
+
 
   for (
     let current = start;
@@ -1686,8 +1759,10 @@ const buildThirtyMinuteSlots = (
 
   }
 
+
   return result
 }
+
 
 const parseSingleTimeWindow = value => {
 
@@ -1696,6 +1771,7 @@ const parseSingleTimeWindow = value => {
       .replace(/,/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
+
 
   /*
      "from 3 PM"
@@ -1709,12 +1785,14 @@ const parseSingleTimeWindow = value => {
       /^from\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm))$/i
     )
 
+
   if (fromMatch) {
 
     const minutes =
       parseClockMinutes(
         fromMatch[1]
       )
+
 
     return Number.isFinite(minutes)
       ? [
@@ -1724,6 +1802,7 @@ const parseSingleTimeWindow = value => {
         ]
       : []
   }
+
 
   /*
      4 PM - 8 PM
@@ -1736,6 +1815,7 @@ const parseSingleTimeWindow = value => {
       /(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*-\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i
     )
 
+
   if (rangeMatch) {
 
     const endMeridiem =
@@ -1745,22 +1825,26 @@ const parseSingleTimeWindow = value => {
         []
       )[1] || ''
 
+
     const start =
       parseClockMinutes(
         rangeMatch[1],
         endMeridiem
       )
 
+
     const end =
       parseClockMinutes(
         rangeMatch[2]
       )
+
 
     return buildThirtyMinuteSlots(
       start,
       end
     )
   }
+
 
   /*
      One exact visiting time
@@ -1771,14 +1855,17 @@ const parseSingleTimeWindow = value => {
       /(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i
     )
 
+
   if (!oneTime) {
     return []
   }
+
 
   const minutes =
     parseClockMinutes(
       oneTime[1]
     )
+
 
   return Number.isFinite(minutes)
     ? [
@@ -1788,6 +1875,7 @@ const parseSingleTimeWindow = value => {
       ]
     : []
 }
+
 
 const parseScheduleTimes = value => {
 
@@ -1802,6 +1890,7 @@ const parseScheduleTimes = value => {
       )
       .filter(Boolean)
 
+
   return [
     ...new Set(
       parts.flatMap(
@@ -1811,16 +1900,19 @@ const parseScheduleTimes = value => {
   ]
 }
 
+
 const getClosedDays = schedule => {
 
   const result =
     new Set()
+
 
   const closedNotes =
     String(schedule || '')
       .match(
         /\([^)]*closed[^)]*\)/gi
       ) || []
+
 
   closedNotes
     .forEach(note => {
@@ -1833,17 +1925,21 @@ const getClosedDays = schedule => {
 
     })
 
+
   return result
 }
+
 
 const parseDoctorVisitingSchedule = doctor => {
 
   const result =
     new Map()
 
+
   if (!doctor) {
     return result
   }
+
 
   /*
      Prefer structured schedule data
@@ -1872,6 +1968,7 @@ const parseDoctorVisitingSchedule = doctor => {
                 )
             : []
 
+
         const times =
           Array.isArray(rule?.times)
             ? [
@@ -1888,6 +1985,7 @@ const parseDoctorVisitingSchedule = doctor => {
               ]
             : []
 
+
         days.forEach(day => {
 
           result.set(
@@ -1899,10 +1997,12 @@ const parseDoctorVisitingSchedule = doctor => {
 
       })
 
+
     if (result.size) {
       return result
     }
   }
+
 
   /*
      Current uploaded doctors already expose
@@ -1917,14 +2017,17 @@ const parseDoctorVisitingSchedule = doctor => {
       ''
     )
 
+
   if (!raw) {
     return result
   }
+
 
   const closedDays =
     getClosedDays(
       raw
     )
+
 
   const clean =
     raw
@@ -1934,6 +2037,7 @@ const parseDoctorVisitingSchedule = doctor => {
       )
       .trim()
 
+
   const segments =
     clean
       .split(';')
@@ -1941,6 +2045,7 @@ const parseDoctorVisitingSchedule = doctor => {
         item.trim()
       )
       .filter(Boolean)
+
 
   segments.forEach(segment => {
 
@@ -1954,11 +2059,13 @@ const parseDoctorVisitingSchedule = doctor => {
         /\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i
       )
 
+
     if (
       firstClock === -1
     ) {
       return
     }
+
 
     let dayPart =
       segment
@@ -1968,12 +2075,14 @@ const parseDoctorVisitingSchedule = doctor => {
         )
         .trim()
 
+
     let timePart =
       segment
         .slice(
           firstClock
         )
         .trim()
+
 
     /*
        Preserve:
@@ -1997,15 +2106,18 @@ const parseDoctorVisitingSchedule = doctor => {
         timePart
     }
 
+
     const days =
       parseScheduleDays(
         dayPart
       )
 
+
     const times =
       parseScheduleTimes(
         timePart
       )
+
 
     if (
       !days.length ||
@@ -2013,6 +2125,7 @@ const parseDoctorVisitingSchedule = doctor => {
     ) {
       return
     }
+
 
     /*
        Specific later schedule overwrites
@@ -2034,14 +2147,17 @@ const parseDoctorVisitingSchedule = doctor => {
 
   })
 
+
   closedDays.forEach(day => {
 
     result.delete(day)
 
   })
 
+
   return result
 }
+
 
 const appointmentTimeMinutes = value => {
 
@@ -2050,10 +2166,12 @@ const appointmentTimeMinutes = value => {
       String(value || '')
     )
 
+
   return Number.isFinite(minutes)
     ? minutes
     : -1
 }
+
 
 const getUpcomingAppointmentDates = (
   doctor,
@@ -2064,10 +2182,12 @@ const getUpcomingAppointmentDates = (
     return []
   }
 
+
   const schedule =
     parseDoctorVisitingSchedule(
       doctor
     )
+
 
   /*
      Critical rule:
@@ -2080,15 +2200,19 @@ const getUpcomingAppointmentDates = (
     return []
   }
 
+
   const now =
     new Date()
+
 
   const locale =
     lang === 'bn'
       ? 'bn-BD'
       : 'en-US'
 
+
   const result = []
+
 
   /*
      Search up to next 60 days
@@ -2109,8 +2233,10 @@ const getUpcomingAppointmentDates = (
         now.getDate() + offset
       )
 
+
     const weekday =
       date.getDay()
+
 
     let timeSlots =
       [
@@ -2120,6 +2246,7 @@ const getUpcomingAppointmentDates = (
           ) || []
         )
       ]
+
 
     /*
        Today:
@@ -2132,6 +2259,7 @@ const getUpcomingAppointmentDates = (
         now.getHours() * 60 +
         now.getMinutes()
 
+
       timeSlots =
         timeSlots.filter(
           time =>
@@ -2143,15 +2271,18 @@ const getUpcomingAppointmentDates = (
 
     }
 
+
     if (!timeSlots.length) {
       continue
     }
+
 
     timeSlots.sort(
       (a, b) =>
         appointmentTimeMinutes(a) -
         appointmentTimeMinutes(b)
     )
+
 
     result.push({
 
@@ -2180,8 +2311,10 @@ const getUpcomingAppointmentDates = (
 
   }
 
+
   return result
 }
+
 
 const isDoctorAppointmentValid = (
   doctor,
@@ -2197,11 +2330,13 @@ const isDoctorAppointmentValid = (
     return false
   }
 
+
   const availableDates =
     getUpcomingAppointmentDates(
       doctor,
       'en'
     )
+
 
   const validDate =
     availableDates.find(
@@ -2209,15 +2344,18 @@ const isDoctorAppointmentValid = (
         item.value === date
     )
 
+
   if (!validDate) {
     return false
   }
+
 
   return validDate.timeSlots
     .includes(
       time
     )
 }
+
 
 const getDoctorDepartmentId = doctorInitials =>
   appointmentDepartments.find(
@@ -2227,6 +2365,7 @@ const getDoctorDepartmentId = doctorInitials =>
       )
   )?.id ||
   appointmentDepartments[0].id
+
 
 const getDoctorsByDepartment = departmentId => {
 
@@ -2238,6 +2377,7 @@ const getDoctorsByDepartment = departmentId => {
     )?.doctors ||
     []
 
+
   return doctors.filter(
     doctor =>
       initials.includes(
@@ -2245,6 +2385,7 @@ const getDoctorsByDepartment = departmentId => {
       )
   )
 }
+
 
 const icons = {
   user: (
@@ -2625,6 +2766,7 @@ export default function App() {
     }
   }, [appointmentDates, selectedAppointmentDate]);
 
+
   // BRIGHT_SCROLL_REVEAL_START
   useEffect(() => {
     const markedElements = [];
@@ -2658,6 +2800,7 @@ export default function App() {
         });
     };
 
+
     // -----------------------------------------
     // How can we help
     // -----------------------------------------
@@ -2672,6 +2815,7 @@ export default function App() {
       "visual",
       (index) => index * 400
     );
+
 
     // -----------------------------------------
     // Doctors
@@ -2688,6 +2832,7 @@ export default function App() {
       520
     );
 
+
     // -----------------------------------------
     // Specialized services
     // -----------------------------------------
@@ -2702,6 +2847,7 @@ export default function App() {
       "visual",
       (index) => (index % 3) * 380
     );
+
 
     // -----------------------------------------
     // Health package
@@ -2718,6 +2864,7 @@ export default function App() {
       560
     );
 
+
     // -----------------------------------------
     // Mobile app
     // -----------------------------------------
@@ -2732,6 +2879,7 @@ export default function App() {
       "visual",
       560
     );
+
 
     // -----------------------------------------
     // Mollick What We Do
@@ -2754,6 +2902,7 @@ export default function App() {
       480
     );
 
+
     // -----------------------------------------
     // Mollick Our Process
     // Existing premium fade/reveal system
@@ -2770,6 +2919,7 @@ export default function App() {
       360
     );
 
+
     // -----------------------------------------
     // Why Bright Health
     // Image first -> text second
@@ -2785,6 +2935,7 @@ export default function App() {
       "text",
       560
     );
+
 
     // -----------------------------------------
     // Contact
@@ -2820,6 +2971,7 @@ export default function App() {
       markedElements.push(field);
     });
 
+
     // -----------------------------------------
     // Footer
     // Column 1 -> 2 -> 3 -> 4
@@ -2844,6 +2996,7 @@ export default function App() {
       markedElements.push(column);
     });
 
+
     // -----------------------------------------
     // Reduced motion
     // -----------------------------------------
@@ -2861,6 +3014,7 @@ export default function App() {
       return undefined;
     }
 
+
     // Mobile should not make users wait too long
     const delayScale =
       window.matchMedia(
@@ -2869,7 +3023,9 @@ export default function App() {
         ? 0.55
         : 1;
 
+
     const timers = new Set();
+
 
     // -----------------------------------------
     // Intersection observer
@@ -2912,9 +3068,11 @@ export default function App() {
         }
       );
 
+
     markedElements.forEach((element) => {
       observer.observe(element);
     });
+
 
     return () => {
       observer.disconnect();
@@ -2925,6 +3083,7 @@ export default function App() {
     };
   }, []);
   // BRIGHT_SCROLL_REVEAL_END
+
 
   // DOCTOR_SCREEN_DYNAMIC_REVEAL_START
   useEffect(() => {
@@ -2939,6 +3098,7 @@ export default function App() {
 
       if (!screen) return;
 
+
       const heading =
         screen.querySelector(
           ".doctor-screen-head > div"
@@ -2951,12 +3111,15 @@ export default function App() {
           )
         );
 
+
       const targets = [
         ...(heading ? [heading] : []),
         ...cards,
       ];
 
+
       if (!targets.length) return;
+
 
       // Apply existing global reveal classes dynamically
       if (heading) {
@@ -2966,6 +3129,7 @@ export default function App() {
         );
       }
 
+
       cards.forEach((card) => {
         card.dataset.reveal = "visual";
 
@@ -2974,10 +3138,12 @@ export default function App() {
         );
       });
 
+
       const reducedMotion =
         window.matchMedia(
           "(prefers-reduced-motion: reduce)"
         ).matches;
+
 
       if (reducedMotion) {
         targets.forEach((element) => {
@@ -2989,13 +3155,16 @@ export default function App() {
         return;
       }
 
+
       const mobile =
         window.matchMedia(
           "(max-width: 640px)"
         ).matches;
 
+
       const stagger =
         mobile ? 220 : 380;
+
 
       observer =
         new IntersectionObserver(
@@ -3018,6 +3187,7 @@ export default function App() {
                   const bRect =
                     b.target.getBoundingClientRect();
 
+
                   // top row first
                   if (
                     Math.abs(
@@ -3030,6 +3200,7 @@ export default function App() {
                     );
                   }
 
+
                   // then left -> right
                   return (
                     aRect.left -
@@ -3037,20 +3208,24 @@ export default function App() {
                   );
                 });
 
+
             visible.forEach(
               (entry, index) => {
 
                 const element =
                   entry.target;
 
+
                 const isHeading =
                   element === heading;
+
 
                 const delay =
                   isHeading
                     ? 0
                     : (index + 1) *
                       stagger;
+
 
                 const timer =
                   window.setTimeout(
@@ -3068,6 +3243,7 @@ export default function App() {
                     delay
                   );
 
+
                 timers.add(timer);
 
                 // reveal only once
@@ -3084,11 +3260,13 @@ export default function App() {
           }
         );
 
+
       targets.forEach((element) => {
         observer.observe(element);
       });
 
     });
+
 
     return () => {
 
@@ -3096,9 +3274,11 @@ export default function App() {
         frame
       );
 
+
       if (observer) {
         observer.disconnect();
       }
+
 
       timers.forEach((timer) => {
         window.clearTimeout(timer);
@@ -3108,6 +3288,8 @@ export default function App() {
 
   }, [doctorListOpen]);
   // DOCTOR_SCREEN_DYNAMIC_REVEAL_END
+
+
 
   useEffect(() => {
     document.documentElement.lang = lang === "bn" ? "bn" : "en";
@@ -3136,6 +3318,7 @@ export default function App() {
     };
   }, []);
 
+  
   // PATIENT_PORTAL_REALTIME_START
   useEffect(() => {
 
@@ -3144,6 +3327,7 @@ export default function App() {
     let unsubscribeReports = null
     let unsubscribeInvoices = null
     let unsubscribeClinicalNotes = null
+
 
     const stopRealtimeListeners = () => {
 
@@ -3174,6 +3358,7 @@ export default function App() {
 
     }
 
+
     const clearPatientData = () => {
 
       setCurrentPatient(null)
@@ -3183,6 +3368,7 @@ export default function App() {
       setPatientClinicalNotes([])
 
     }
+
 
     const timestampValue = value => {
 
@@ -3219,6 +3405,7 @@ export default function App() {
 
     }
 
+
     const sortDesc = (a, b) => {
 
       const aTime =
@@ -3237,6 +3424,7 @@ export default function App() {
 
     }
 
+
     const snapshotToArray =
       snapshot =>
         snapshot.docs
@@ -3246,6 +3434,7 @@ export default function App() {
           }))
           .sort(sortDesc)
 
+
     const unsubscribeAuth =
       onAuthStateChanged(
         firebaseAuth,
@@ -3254,6 +3443,7 @@ export default function App() {
           // Auth changed:
           // stop listeners from previous user.
           stopRealtimeListeners()
+
 
           if (
             !user ||
@@ -3265,7 +3455,9 @@ export default function App() {
 
           }
 
+
           const uid = user.uid
+
 
           // ============================================
           // PATIENT PROFILE - REALTIME
@@ -3279,6 +3471,7 @@ export default function App() {
               'patients',
               uid
             )
+
 
           unsubscribePatient =
             firestoreOnSnapshot(
@@ -3294,6 +3487,7 @@ export default function App() {
                   return
 
                 }
+
 
                 setCurrentPatient({
                   uid,
@@ -3312,6 +3506,7 @@ export default function App() {
 
               }
             )
+
 
           // ============================================
           // BOOKINGS - REALTIME
@@ -3332,6 +3527,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeBookings =
             firestoreOnSnapshot(
@@ -3357,6 +3553,7 @@ export default function App() {
               }
             )
 
+
           // ============================================
           // REPORTS - REALTIME
           // ============================================
@@ -3376,6 +3573,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeReports =
             firestoreOnSnapshot(
@@ -3401,6 +3599,7 @@ export default function App() {
               }
             )
 
+
           // PATIENT_CLINICAL_NOTES_REALTIME
           // ============================================
           // PRESCRIPTIONS - REALTIME
@@ -3421,6 +3620,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeClinicalNotes =
             firestoreOnSnapshot(
@@ -3446,6 +3646,7 @@ export default function App() {
               }
             )
 
+
           // ============================================
           // INVOICES - REALTIME
           // ============================================
@@ -3465,6 +3666,7 @@ export default function App() {
                 uid
               )
             )
+
 
           unsubscribeInvoices =
             firestoreOnSnapshot(
@@ -3492,6 +3694,7 @@ export default function App() {
 
         }
       )
+
 
     return () => {
 
@@ -3861,6 +4064,7 @@ export default function App() {
       return
     }
 
+
     if (!isValidBDPhone(rawPhone)) {
       setBookingError(
         lang === "en"
@@ -3958,9 +4162,9 @@ export default function App() {
         >
           {[
             ["home", lang === "en" ? "Home" : "হোম"],
+            ["packages", lang === "en" ? "Our Package" : "আমাদের প্যাকেজ"],
             ["services", lang === "en" ? "What We Do" : "আমরা কী করি"],
             ["about", lang === "en" ? "Our Process" : "কাজের প্রক্রিয়া"],
-            ["packages", lang === "en" ? "Our Packages" : "আমাদের প্যাকেজ"],
             ["faq", lang === "en" ? "FAQ" : "প্রশ্নোত্তর"],
           ].map(([id, label]) => (
             <button key={id} onClick={() => scrollTo(id)}>
@@ -4006,8 +4210,8 @@ export default function App() {
               <span className="mollick-boom-dot" aria-hidden="true" />
               <span>
                 {lang === "en"
-                  ? "5+ YEARS OF TRUSTED SOFTWARE DEVELOPMENT"
-                  : "৫+ বছরের বিশ্বস্ত সফটওয়্যার ডেভেলপমেন্ট"}
+                  ? "15+ YEARS OF TRUSTED SOFTWARE DEVELOPMENT"
+                  : "১৫+ বছরের বিশ্বস্ত সফটওয়্যার ডেভেলপমেন্ট"}
               </span>
             </div>
 
@@ -4052,29 +4256,31 @@ export default function App() {
               <div className="software-package-track">
                 {[...softwarePackages, ...softwarePackages].map((pkg, index) => (
                   <article
-                  className="software-package-card"
-                  key={`${pkg.en}-${index}`}
-                >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-
-                  <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
-
-                  <button
-                    type="button"
-                    className="software-package-book"
-                    onClick={() => scrollTo("contact")}
+                    className="software-package-card"
+                    key={`hero-${pkg.en}-${index}`}
                   >
-                    {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
-                    <Icon name="arrow" size={16} />
-                  </button>
-                </article>
+                    <div className="software-package-number">
+                      {String((index % softwarePackages.length) + 1).padStart(2, "0")}
+                    </div>
+
+                    <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
+
+                    <div className="software-package-amount">
+                      <small>{lang === "en" ? "Amount" : "মূল্য"}</small>
+                      <strong>
+                        {lang === "en" ? pkg.amountEn : pkg.amountBn}
+                      </strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="software-package-book"
+                      onClick={() => scrollTo("contact")}
+                    >
+                      {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
+                      <Icon name="arrow" size={16} />
+                    </button>
+                  </article>
                 ))}
               </div>
             </div>
@@ -4092,6 +4298,86 @@ export default function App() {
         <div className="mollick-reviews-wrap">
           <ReviewsSection lang={lang} />
         </div>
+
+        <section className="doctor-section section-pad" id="doctors">
+          <div className="doctor-heading">
+            <div className="section-intro">
+              <span className="kicker">{t.doctorsEyebrow}</span>
+              <h2>{t.doctorsTitle}</h2>
+              <p>{t.doctorsP}</p>
+            </div>
+            <div className="doctor-tools">
+              <button
+                className="see-list"
+                onClick={() => setDoctorListOpen(true)}
+              >
+                {lang === "en" ? "See full list" : "সম্পূর্ণ তালিকা"}
+                <Icon name="arrow" size={17} />
+              </button>
+            </div>
+          </div>
+          <div className="doctor-flow" aria-label="Scrolling doctor list">
+            <div className="doctor-track">
+              {flowDoctors.map((doctor, index) => (
+                <article
+                  className="doctor-flow-card"
+                  key={`${doctor.initials}-${index}`}
+                >
+                  <div className="doctor-photo">
+                    <DoctorPortrait doctor={doctor} alt={doctor.name[lang]} />
+                  </div>
+                  <div className="doctor-card-top">
+                    <span>{doctor.initials}</span>
+                    <b>{doctor.schedule[lang]}</b>
+                  </div>
+                  <h3>{doctor.name[lang]}</h3>
+                  <p>{doctor.role[lang]}</p>
+                  <small>{doctor.exp}</small>
+                  <em>{doctor.services[lang]}</em>
+                  <button
+                    className="doctor-book"
+                    onClick={() => openBooking(doctor)}
+                  >
+                    {t.book}
+                    <Icon name="arrow" size={16} />
+                  </button>
+                </article>
+              ))}
+            </div>
+          </div>
+          {!filteredDoctors.length && (
+            <p className="no-results">{t.noDoctors}</p>
+          )}
+        </section>
+
+        <section className="care section-pad">
+          <div className="section-intro">
+            <span className="kicker">{t.careEyebrow}</span>
+            <h2>{t.careTitle}</h2>
+            <p>{t.careP}</p>
+          </div>
+          <div className="department-grid">
+            {t.departments.map(([title, sub], index) => (
+              <button className="department" key={title} type="button" onClick={() => {
+                const ids = ["cardiology", "gynecology", "pediatrics", "medicine", "orthopedic", "diagnostics"];
+                openBooking(null, ids[index]);
+              }}>
+                <span className={`dept-symbol d${index}`}>
+                  {["♥", "✦", "☀", "＋", "⌁", "◉"][index]}
+                </span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{sub}</p>
+                </div>
+                <Icon name="arrow" size={18} />
+              </button>
+            ))}
+          </div>
+          <button className="text-link">
+            {t.explore}
+            <Icon name="arrow" size={18} />
+          </button>
+        </section>
 
         <section className="software-package-section section-pad" id="packages">
           <div className="software-package-heading">
@@ -4126,16 +4412,18 @@ export default function App() {
                   className="software-package-card"
                   key={`${pkg.en}-${index}`}
                 >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                  <div className="software-package-number">
+                    {String((index % softwarePackages.length) + 1).padStart(2, "0")}
                   </div>
 
                   <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
+
+                  <div className="software-package-amount">
+                    <small>{lang === "en" ? "Amount" : "মূল্য"}</small>
+                    <strong>
+                      {lang === "en" ? pkg.amountEn : pkg.amountBn}
+                    </strong>
+                  </div>
 
                   <button
                     type="button"
@@ -4151,9 +4439,47 @@ export default function App() {
           </div>
         </section>
 
-        <FAQSection lang={lang} />
-
-
+        <section className="app-section section-pad" id="app">
+          <div className="app-copy">
+            <span className="app-pill">
+              <i />
+              {lang === "en"
+                ? "Bright Health mobile app"
+                : "ব্রাইট হেলথ মোবাইল অ্যাপ"}
+            </span>
+            <h2>
+              {lang === "en"
+                ? "Hospital care, closer than ever."
+                : "হাসপাতালের সেবা, আরও কাছে।"}
+            </h2>
+            <p>
+              {lang === "en"
+                ? "Book appointments, check reports, explore health packages and stay connected with Bright Health from your phone."
+                : "ফোন থেকেই অ্যাপয়েন্টমেন্ট বুকিং, রিপোর্ট দেখা, হেলথ প্যাকেজ ও ব্রাইট হেলথের সাথে দ্রুত যোগাযোগ করুন।"}
+            </p>
+            <div className="store-buttons">
+              <button aria-label="Download on the App Store">
+                <img
+                  src={asset("app-store-badge.webp")}
+                  alt="Download on the App Store"
+                />
+              </button>
+              <button aria-label="Get it on Google Play">
+                <img
+                  src={asset("google-play-badge.webp")}
+                  alt="Get it on Google Play"
+                />
+              </button>
+            </div>
+          </div>
+          <div className="app-visual">
+            <img
+              src={asset("app-phones.webp")}
+              alt="Bright Health app preview"
+              loading="lazy"
+            />
+          </div>
+        </section>
 
         <section className="contact-section section-pad" id="contact">
           <div className="contact-heading">
@@ -4207,10 +4533,12 @@ export default function App() {
               const formData =
                 new FormData(form)
 
+
               const name =
                 String(
                   formData.get('name') || ''
                 ).trim()
+
 
               const phone =
                 String(
@@ -4219,10 +4547,12 @@ export default function App() {
                   .replace(/\D/g, '')
                   .slice(0, 11)
 
+
               const message =
                 String(
                   formData.get('message') || ''
                 ).trim()
+
 
               const showFeedback = (
                 type,
@@ -4237,6 +4567,7 @@ export default function App() {
                 feedback.className =
                   `contact-feedback ${type}`
               }
+
 
               // ======================================
               // REQUIRED VALIDATION
@@ -4258,6 +4589,7 @@ export default function App() {
                 return
               }
 
+
               // Bangladesh mobile:
               // exactly 11 digits
               // 013 - 019
@@ -4276,6 +4608,7 @@ export default function App() {
                 return
               }
 
+
               if (name.length > 100) {
 
                 showFeedback(
@@ -4287,6 +4620,7 @@ export default function App() {
 
                 return
               }
+
 
               if (message.length > 2000) {
 
@@ -4300,10 +4634,12 @@ export default function App() {
                 return
               }
 
+
               if (submitButton) {
                 submitButton.disabled =
                   true
               }
+
 
               showFeedback(
                 'sending',
@@ -4312,6 +4648,7 @@ export default function App() {
                   : 'পাঠানো হচ্ছে...'
               )
 
+
               try {
 
                 const database =
@@ -4319,11 +4656,13 @@ export default function App() {
                     firebaseApp
                   )
 
+
                 const submissionsRef =
                   realtimeDatabase.ref(
                     database,
                     'Get_in_touch'
                   )
+
 
                 await realtimeDatabase.push(
                   submissionsRef,
@@ -4336,7 +4675,9 @@ export default function App() {
                   }
                 )
 
+
                 form.reset()
+
 
                 // Clear old inline feedback
                 if (feedback) {
@@ -4344,6 +4685,7 @@ export default function App() {
                   feedback.className =
                     'contact-feedback'
                 }
+
 
                 // ======================================
                 // PREMIUM SUCCESS TOAST
@@ -4353,6 +4695,7 @@ export default function App() {
                   document.getElementById(
                     'contact-success-toast'
                   )
+
 
                 if (!toast) {
 
@@ -4383,6 +4726,7 @@ export default function App() {
 
                 }
 
+
                 toast.innerHTML =
                   '<span class="contact-success-toast__icon">✓</span>' +
                   '<span class="contact-success-toast__copy">' +
@@ -4402,6 +4746,7 @@ export default function App() {
                     '</small>' +
                   '</span>'
 
+
                 // Restart animation if needed
                 toast.classList.remove(
                   'is-visible'
@@ -4412,6 +4757,7 @@ export default function App() {
                 toast.classList.add(
                   'is-visible'
                 )
+
 
                 // Clear previous timers
                 if (
@@ -4424,6 +4770,7 @@ export default function App() {
                   )
                 }
 
+
                 if (
                   window
                     .__brightHealthContactScrollTimer
@@ -4433,6 +4780,7 @@ export default function App() {
                       .__brightHealthContactScrollTimer
                   )
                 }
+
 
                 // ======================================
                 // SHOW TOAST FIRST,
@@ -4454,6 +4802,7 @@ export default function App() {
                       700
                     )
 
+
                 // ======================================
                 // AUTO HIDE TOAST
                 // ======================================
@@ -4466,6 +4815,7 @@ export default function App() {
                         toast.classList.remove(
                           'is-visible'
                         )
+
 
                         window.setTimeout(
                           () => {
@@ -4490,6 +4840,7 @@ export default function App() {
                   'Get_in_touch submission failed:',
                   error
                 )
+
 
                 showFeedback(
                   'error',
@@ -4634,177 +4985,52 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="footer mollick-footer">
-        <div className="footer-main mollick-footer-main">
-          <div className="footer-brand mollick-footer-brand">
-            <a
-              className="brand inverted"
-              href="#home"
-              aria-label="Mollick Software Solutions home"
-            >
-              <img
-                src={asset("mollick-icon-white.png")}
-                alt=""
-              />
+      <footer className="footer">
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a className="brand inverted" href="#home" aria-label="Mollick Software Solutions home">
+              <img src={asset("mollick-icon-white.png")} alt="" />
               <span>
                 <strong>MOLLICK</strong>
                 <small>SOFTWARE SOLUTIONS</small>
               </span>
             </a>
-
-            <p>
-              {lang === "en"
-                ? "Custom software, web platforms, mobile apps and connected digital solutions built around real business needs."
-                : "বাস্তব ব্যবসায়িক প্রয়োজন অনুযায়ী কাস্টম সফটওয়্যার, ওয়েব প্ল্যাটফর্ম, মোবাইল অ্যাপ ও সংযুক্ত ডিজিটাল সমাধান তৈরি করি।"}
-            </p>
-
-            <div className="mollick-footer-contact-list">
-              <a href="tel:01617083892">
-                <span>{lang === "en" ? "Phone" : "ফোন"}</span>
-                <strong>01617083892</strong>
-              </a>
-
-              <a
-                href="https://wa.me/8801818225467"
-                target="_blank"
-                rel="noreferrer"
+            <p>{t.footerP}</p>
+            <a href={`tel:${HOTLINE}`}>{HOTLINE}</a>
+          </div>
+          <div>
+            <h3>{t.footerHeadings[0]}</h3>
+            {t.hospitalLinks.map((x, i) => (
+              <button
+                key={x}
+                onClick={() => i === 0 ? window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }) : scrollTo(footerHospitalTargets[i - 1])}
               >
-                <span>WhatsApp</span>
-                <strong>01818225467</strong>
-              </a>
-
-              <a href="mailto:mollicksoftwaresolutions@gmail.com">
-                <span>{lang === "en" ? "Email" : "ইমেইল"}</span>
-                <strong>mollicksoftwaresolutions@gmail.com</strong>
-              </a>
-            </div>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Quick Links" : "দ্রুত লিংক"}</h3>
-
-            <button
-              type="button"
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  left: 0,
-                  behavior: "smooth",
-                })
-              }
-            >
-              {lang === "en" ? "Home" : "হোম"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("packages")}
-            >
-              {lang === "en"
-                ? "Our Packages"
-                : "আমাদের প্যাকেজসমূহ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("services")}
-            >
-              {lang === "en"
-                ? "What We Do"
-                : "আমরা কী করি"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("about")}
-            >
-              {lang === "en"
-                ? "Our Process"
-                : "কাজের প্রক্রিয়া"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("reviews")}
-            >
-              {lang === "en" ? "Reviews" : "রিভিউ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-            </button>
+          <div>
+            <h3>{t.footerHeadings[1]}</h3>
+            {t.patientLinks.map((x, i) => (
+              <button key={x} onClick={footerPatientActions[i]}>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Services" : "সেবাসমূহ"}</h3>
-
-            <span>
-              {lang === "en"
-                ? "Mobile Application Development"
-                : "মোবাইল অ্যাপ্লিকেশন ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Web Platform Development"
-                : "ওয়েব প্ল্যাটফর্ম ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Backend & API Systems"
-                : "ব্যাকএন্ড ও API সিস্টেম"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Management Software"
-                : "ম্যানেজমেন্ট সফটওয়্যার"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "IoT Solutions"
-                : "IoT সলিউশন"}
-            </span>
-          </div>
-
-          <div className="footer-cta mollick-footer-cta">
-            <h3>
-              {lang === "en"
-                ? "Have a project in mind?"
-                : "নতুন কোনো প্রজেক্ট আছে?"}
-            </h3>
-
-            <p>
-              {lang === "en"
-                ? "Tell us what you want to build. We’ll discuss the right approach with you."
-                : "আপনি কী তৈরি করতে চান আমাদের জানান। আমরা আপনার সাথে উপযুক্ত সমাধান নিয়ে আলোচনা করব।"}
-            </p>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-              <span aria-hidden="true">→</span>
-            </button>
+          <div className="footer-cta">
+            <h3>{t.always}</h3>
+            <p>{t.alwaysP}</p>
+            <a href={`tel:${HOTLINE}`}>
+              <Icon name="phone" size={17} />
+              {HOTLINE}
+            </a>
           </div>
         </div>
-
-        <div className="footer-bottom mollick-footer-bottom">
-          <span>
-            {lang === "en"
-              ? "© 2026 Mollick Software Solutions. All rights reserved."
-              : "© ২০২৬ Mollick Software Solutions. সর্বস্বত্ব সংরক্ষিত।"}
-          </span>
+        <div className="footer-bottom">
+          <span>{t.copyright}</span>
+          <button onClick={() => setLang(lang === "en" ? "bn" : "en")}>
+            {t.language}
+          </button>
         </div>
       </footer>
 
@@ -5264,6 +5490,7 @@ export default function App() {
 
                                  </div>
 
+
                                  {clinicalNote.diagnosis && (
                                    <p className="portal-prescription-line">
 
@@ -5280,6 +5507,7 @@ export default function App() {
                                    </p>
                                  )}
 
+
                                  {clinicalNote.symptoms && (
                                    <p className="portal-prescription-line">
 
@@ -5295,6 +5523,7 @@ export default function App() {
 
                                    </p>
                                  )}
+
 
                                  {Array.isArray(
                                    clinicalNote.prescriptionItems
@@ -5323,6 +5552,7 @@ export default function App() {
                                                    : "ওষুধ")}
                                              </strong>
 
+
                                              <span>
                                                {[
                                                  item.dose,
@@ -5332,6 +5562,7 @@ export default function App() {
                                                  .filter(Boolean)
                                                  .join(" · ")}
                                              </span>
+
 
                                              {item.instruction && (
                                                <b>
@@ -5347,6 +5578,7 @@ export default function App() {
                                      </div>
 
                                    )}
+
 
                                  {clinicalNote.prescription && (
                                    <p className="portal-prescription-line">
@@ -5364,6 +5596,7 @@ export default function App() {
                                    </p>
                                  )}
 
+
                                  {clinicalNote.advice && (
                                    <p className="portal-prescription-line">
 
@@ -5379,6 +5612,7 @@ export default function App() {
 
                                    </p>
                                  )}
+
 
                                  {clinicalNote.followUpDate && (
                                    <div className="portal-prescription-followup">
@@ -5398,6 +5632,7 @@ export default function App() {
 
                                    </div>
                                  )}
+
 
                                  <button
                                    type="button"

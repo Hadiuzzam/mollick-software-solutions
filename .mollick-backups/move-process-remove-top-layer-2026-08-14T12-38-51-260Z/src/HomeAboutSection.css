@@ -1,0 +1,276 @@
+/* =========================================================
+   MOLLICK SOFTWARE SOLUTIONS — OUR PROCESS
+   Structure matched to the supplied Boom HomeAboutSection.
+   Colours adapted only to Mollick's navy / white / gold system.
+   ========================================================= */
+
+.mollick-process-section {
+  width: 95%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(84px, 9vw, 118px) 10px clamp(96px, 10vw, 136px);
+  box-sizing: border-box;
+}
+
+.mollick-process-section__heading > span {
+  display: block;
+  color: rgba(255, 255, 255, 0.76);
+  font-family: Inter, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mollick-process-section__heading h2 {
+  margin: 12px 0 0;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-weight: 750;
+  font-size: 58px;
+  line-height: 1.08;
+  letter-spacing: -2.4px;
+}
+
+.mollick-process-section__heading p {
+  max-width: 760px;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.60);
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+.mollick-process-grid {
+  width: 100%;
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.mollick-process-card {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  background: #06142F;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+  text-align: left;
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms ease,
+    box-shadow 320ms ease;
+}
+
+.mollick-process-card__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mollick-process-card__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 20, 47, 0) 38%, rgba(6, 20, 47, 0.28) 62%, rgba(0, 0, 0, 0.92) 100%);
+  pointer-events: none;
+}
+
+.mollick-process-card__content {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.mollick-process-card__number {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  color: #06142F;
+  font-family: Inter, sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.mollick-process-card h3 {
+  min-width: 0;
+  flex: 1;
+  margin: 0;
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.35px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.62);
+}
+
+.mollick-process-card__arrow {
+  flex-shrink: 0;
+}
+
+.mollick-process-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 34px 74px rgba(0, 0, 0, 0.34);
+}
+
+.mollick-process-card:hover .mollick-process-card__image {
+  transform: scale(1.035);
+}
+
+@media (max-width: 1050px) {
+  .mollick-process-section__heading h2 {
+    font-size: 48px;
+  }
+
+  .mollick-process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .mollick-process-card h3 {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mollick-process-section {
+    width: 95%;
+    padding: 68px 4px 88px;
+  }
+
+  .mollick-process-section__heading > span {
+    font-size: 11px;
+  }
+
+  .mollick-process-section__heading h2 {
+    margin-top: 10px;
+    font-size: 38px;
+    letter-spacing: -1.5px;
+  }
+
+  .mollick-process-section__heading p {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 25px;
+  }
+
+  .mollick-process-grid {
+    margin-top: 30px;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .mollick-process-card {
+    aspect-ratio: 4 / 5;
+    border-radius: 18px;
+  }
+
+  .mollick-process-card__content {
+    right: 18px;
+    bottom: 18px;
+    left: 18px;
+    gap: 10px;
+  }
+
+  .mollick-process-card__number {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .mollick-process-card h3 {
+    font-size: 21px;
+  }
+
+  .mollick-process-card__arrow {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mollick-process-card,
+  .mollick-process-card__image {
+    transition: none;
+  }
+}
+
+/* === MOLLICK PROCESS FULL IMAGE + FADE SUPPORT START === */
+
+/*
+ * The uploaded process images are landscape while the reference cards are
+ * portrait. A plain object-fit: cover crops them heavily.
+ *
+ * Keep the portrait card layout, show the WHOLE image with contain,
+ * and use the same image as a dark soft backdrop so the card still feels full.
+ */
+
+.mollick-process-card {
+  isolation: isolate;
+  background: #06142F;
+}
+
+.mollick-process-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -10px;
+  background-image: var(--process-card-image);
+  background-size: cover;
+  background-position: center;
+  filter: blur(16px) brightness(0.42);
+  transform: scale(1.07);
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.mollick-process-card__image {
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+  object-position: center;
+  background: transparent;
+}
+
+/* Keep the existing dark readable overlay above the image. */
+.mollick-process-card__overlay {
+  z-index: 2;
+}
+
+.mollick-process-card__content {
+  z-index: 3;
+}
+
+/*
+ * The full image should remain visible. Keep the existing premium hover
+ * movement extremely subtle instead of zooming/cropping the picture again.
+ */
+.mollick-process-card:hover .mollick-process-card__image {
+  transform: scale(1.008);
+}
+
+/* === MOLLICK PROCESS FULL IMAGE + FADE SUPPORT END === */

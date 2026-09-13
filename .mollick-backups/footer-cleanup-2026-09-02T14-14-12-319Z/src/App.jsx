@@ -21,7 +21,6 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { WhatWeDoSection } from "./WhatWeDoSection";
 import { HomeAboutSection } from "./HomeAboutSection";
 import { ReviewsSection } from "./ReviewsSection";
-import { FAQSection } from "./FAQSection";
 import * as realtimeDatabase from 'firebase/database'
 import { onSnapshot as firestoreOnSnapshot } from 'firebase/firestore'
 
@@ -779,72 +778,62 @@ const softwarePackages = [
   {
     en: "Hospital Management System",
     bn: "হাসপাতাল ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/hospital-management.webp`,
-    altEn: "Hospital management software dashboard",
-    altBn: "হাসপাতাল ম্যানেজমেন্ট সফটওয়্যার ড্যাশবোর্ড",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "ERP System",
     bn: "ERP সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/erp-system.webp`,
-    altEn: "ERP business management dashboard",
-    altBn: "ERP ব্যবসা ব্যবস্থাপনা ড্যাশবোর্ড",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "School, College, Madrasa Website",
     bn: "স্কুল, কলেজ ও মাদ্রাসা ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/education-website.webp`,
-    altEn: "Education website and learning portal",
-    altBn: "শিক্ষা প্রতিষ্ঠান ওয়েবসাইট ও লার্নিং পোর্টাল",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Business Management System",
     bn: "বিজনেস ম্যানেজমেন্ট সিস্টেম",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/business-management.webp`,
-    altEn: "Business management analytics workspace",
-    altBn: "বিজনেস ম্যানেজমেন্ট অ্যানালিটিক্স ওয়ার্কস্পেস",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Club & Organisation Websites",
     bn: "ক্লাব ও সংগঠন ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/club-organisation.webp`,
-    altEn: "Club and organisation community website",
-    altBn: "ক্লাব ও সংগঠনের কমিউনিটি ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Mobile Application Android",
     bn: "অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/android-app.webp`,
-    altEn: "Premium Android mobile application interface",
-    altBn: "প্রিমিয়াম অ্যান্ড্রয়েড মোবাইল অ্যাপ্লিকেশন",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Mobile Application iOS",
     bn: "iOS মোবাইল অ্যাপ্লিকেশন",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ios-app.webp`,
-    altEn: "Premium iOS mobile application interface",
-    altBn: "প্রিমিয়াম iOS মোবাইল অ্যাপ্লিকেশন",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Introducing Website",
     bn: "পরিচিতিমূলক ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/introducing-website.webp`,
-    altEn: "Corporate introduction website",
-    altBn: "কর্পোরেট পরিচিতিমূলক ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
   {
     en: "Online News Portal",
     bn: "অনলাইন নিউজ পোর্টাল",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/online-news.webp`,
-    altEn: "Online news portal and digital newsroom",
-    altBn: "অনলাইন নিউজ পোর্টাল ও ডিজিটাল নিউজরুম",
+    amountEn: "2,00,000 Tk",
+    amountBn: "২,০০,০০০ টাকা",
   },
   {
     en: "E-commerce Website",
     bn: "ই-কমার্স ওয়েবসাইট",
-    image: `${import.meta.env.BASE_URL}mollick-package-images/ecommerce-website.webp`,
-    altEn: "Premium e-commerce shopping website",
-    altBn: "প্রিমিয়াম ই-কমার্স শপিং ওয়েবসাইট",
+    amountEn: "Custom Quote",
+    amountBn: "আলোচনা সাপেক্ষ",
   },
 ];
 
@@ -3958,9 +3947,9 @@ export default function App() {
         >
           {[
             ["home", lang === "en" ? "Home" : "হোম"],
+            ["packages", lang === "en" ? "Our Package" : "আমাদের প্যাকেজ"],
             ["services", lang === "en" ? "What We Do" : "আমরা কী করি"],
             ["about", lang === "en" ? "Our Process" : "কাজের প্রক্রিয়া"],
-            ["packages", lang === "en" ? "Our Packages" : "আমাদের প্যাকেজ"],
             ["faq", lang === "en" ? "FAQ" : "প্রশ্নোত্তর"],
           ].map(([id, label]) => (
             <button key={id} onClick={() => scrollTo(id)}>
@@ -4052,29 +4041,31 @@ export default function App() {
               <div className="software-package-track">
                 {[...softwarePackages, ...softwarePackages].map((pkg, index) => (
                   <article
-                  className="software-package-card"
-                  key={`${pkg.en}-${index}`}
-                >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-
-                  <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
-
-                  <button
-                    type="button"
-                    className="software-package-book"
-                    onClick={() => scrollTo("contact")}
+                    className="software-package-card"
+                    key={`hero-${pkg.en}-${index}`}
                   >
-                    {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
-                    <Icon name="arrow" size={16} />
-                  </button>
-                </article>
+                    <div className="software-package-number">
+                      {String((index % softwarePackages.length) + 1).padStart(2, "0")}
+                    </div>
+
+                    <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
+
+                    <div className="software-package-amount">
+                      <small>{lang === "en" ? "Amount" : "মূল্য"}</small>
+                      <strong>
+                        {lang === "en" ? pkg.amountEn : pkg.amountBn}
+                      </strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="software-package-book"
+                      onClick={() => scrollTo("contact")}
+                    >
+                      {lang === "en" ? "Book Now" : "এখনই বুক করুন"}
+                      <Icon name="arrow" size={16} />
+                    </button>
+                  </article>
                 ))}
               </div>
             </div>
@@ -4126,16 +4117,18 @@ export default function App() {
                   className="software-package-card"
                   key={`${pkg.en}-${index}`}
                 >
-                  <div className="software-package-media">
-                    <img
-                      src={pkg.image}
-                      alt={lang === "en" ? pkg.altEn : pkg.altBn}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                  <div className="software-package-number">
+                    {String((index % softwarePackages.length) + 1).padStart(2, "0")}
                   </div>
 
                   <h3>{lang === "en" ? pkg.en : pkg.bn}</h3>
+
+                  <div className="software-package-amount">
+                    <small>{lang === "en" ? "Amount" : "মূল্য"}</small>
+                    <strong>
+                      {lang === "en" ? pkg.amountEn : pkg.amountBn}
+                    </strong>
+                  </div>
 
                   <button
                     type="button"
@@ -4150,8 +4143,6 @@ export default function App() {
             </div>
           </div>
         </section>
-
-        <FAQSection lang={lang} />
 
 
 
@@ -4634,177 +4625,52 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="footer mollick-footer">
-        <div className="footer-main mollick-footer-main">
-          <div className="footer-brand mollick-footer-brand">
-            <a
-              className="brand inverted"
-              href="#home"
-              aria-label="Mollick Software Solutions home"
-            >
-              <img
-                src={asset("mollick-icon-white.png")}
-                alt=""
-              />
+      <footer className="footer">
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a className="brand inverted" href="#home" aria-label="Mollick Software Solutions home">
+              <img src={asset("mollick-icon-white.png")} alt="" />
               <span>
                 <strong>MOLLICK</strong>
                 <small>SOFTWARE SOLUTIONS</small>
               </span>
             </a>
-
-            <p>
-              {lang === "en"
-                ? "Custom software, web platforms, mobile apps and connected digital solutions built around real business needs."
-                : "বাস্তব ব্যবসায়িক প্রয়োজন অনুযায়ী কাস্টম সফটওয়্যার, ওয়েব প্ল্যাটফর্ম, মোবাইল অ্যাপ ও সংযুক্ত ডিজিটাল সমাধান তৈরি করি।"}
-            </p>
-
-            <div className="mollick-footer-contact-list">
-              <a href="tel:01617083892">
-                <span>{lang === "en" ? "Phone" : "ফোন"}</span>
-                <strong>01617083892</strong>
-              </a>
-
-              <a
-                href="https://wa.me/8801818225467"
-                target="_blank"
-                rel="noreferrer"
+            <p>{t.footerP}</p>
+            <a href={`tel:${HOTLINE}`}>{HOTLINE}</a>
+          </div>
+          <div>
+            <h3>{t.footerHeadings[0]}</h3>
+            {t.hospitalLinks.map((x, i) => (
+              <button
+                key={x}
+                onClick={() => i === 0 ? window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }) : scrollTo(footerHospitalTargets[i - 1])}
               >
-                <span>WhatsApp</span>
-                <strong>01818225467</strong>
-              </a>
-
-              <a href="mailto:mollicksoftwaresolutions@gmail.com">
-                <span>{lang === "en" ? "Email" : "ইমেইল"}</span>
-                <strong>mollicksoftwaresolutions@gmail.com</strong>
-              </a>
-            </div>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Quick Links" : "দ্রুত লিংক"}</h3>
-
-            <button
-              type="button"
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  left: 0,
-                  behavior: "smooth",
-                })
-              }
-            >
-              {lang === "en" ? "Home" : "হোম"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("packages")}
-            >
-              {lang === "en"
-                ? "Our Packages"
-                : "আমাদের প্যাকেজসমূহ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("services")}
-            >
-              {lang === "en"
-                ? "What We Do"
-                : "আমরা কী করি"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("about")}
-            >
-              {lang === "en"
-                ? "Our Process"
-                : "কাজের প্রক্রিয়া"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("reviews")}
-            >
-              {lang === "en" ? "Reviews" : "রিভিউ"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-            </button>
+          <div>
+            <h3>{t.footerHeadings[1]}</h3>
+            {t.patientLinks.map((x, i) => (
+              <button key={x} onClick={footerPatientActions[i]}>
+                {x}
+              </button>
+            ))}
           </div>
-
-          <div className="mollick-footer-column">
-            <h3>{lang === "en" ? "Services" : "সেবাসমূহ"}</h3>
-
-            <span>
-              {lang === "en"
-                ? "Mobile Application Development"
-                : "মোবাইল অ্যাপ্লিকেশন ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Web Platform Development"
-                : "ওয়েব প্ল্যাটফর্ম ডেভেলপমেন্ট"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Backend & API Systems"
-                : "ব্যাকএন্ড ও API সিস্টেম"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "Management Software"
-                : "ম্যানেজমেন্ট সফটওয়্যার"}
-            </span>
-
-            <span>
-              {lang === "en"
-                ? "IoT Solutions"
-                : "IoT সলিউশন"}
-            </span>
-          </div>
-
-          <div className="footer-cta mollick-footer-cta">
-            <h3>
-              {lang === "en"
-                ? "Have a project in mind?"
-                : "নতুন কোনো প্রজেক্ট আছে?"}
-            </h3>
-
-            <p>
-              {lang === "en"
-                ? "Tell us what you want to build. We’ll discuss the right approach with you."
-                : "আপনি কী তৈরি করতে চান আমাদের জানান। আমরা আপনার সাথে উপযুক্ত সমাধান নিয়ে আলোচনা করব।"}
-            </p>
-
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
-            >
-              {lang === "en"
-                ? "Contact Us"
-                : "যোগাযোগ করুন"}
-              <span aria-hidden="true">→</span>
-            </button>
+          <div className="footer-cta">
+            <h3>{t.always}</h3>
+            <p>{t.alwaysP}</p>
+            <a href={`tel:${HOTLINE}`}>
+              <Icon name="phone" size={17} />
+              {HOTLINE}
+            </a>
           </div>
         </div>
-
-        <div className="footer-bottom mollick-footer-bottom">
-          <span>
-            {lang === "en"
-              ? "© 2026 Mollick Software Solutions. All rights reserved."
-              : "© ২০২৬ Mollick Software Solutions. সর্বস্বত্ব সংরক্ষিত।"}
-          </span>
+        <div className="footer-bottom">
+          <span>{t.copyright}</span>
+          <button onClick={() => setLang(lang === "en" ? "bn" : "en")}>
+            {t.language}
+          </button>
         </div>
       </footer>
 
