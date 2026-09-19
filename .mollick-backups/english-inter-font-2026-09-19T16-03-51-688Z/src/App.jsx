@@ -225,7 +225,7 @@ const downloadClinicalNotePdf = async ({
             <div style="
               color:#082c52;
               font-size:23px;
-              font-weight: var(--mollick-fw-900, 900);
+              font-weight:900;
             ">
               BRIGHT HEALTH
             </div>
@@ -251,7 +251,7 @@ const downloadClinicalNotePdf = async ({
           <div style="
             color:#0b8656;
             font-size:12px;
-            font-weight: var(--mollick-fw-900, 900);
+            font-weight:900;
           ">
             DOCTOR PRESCRIPTION
           </div>
@@ -260,7 +260,7 @@ const downloadClinicalNotePdf = async ({
             margin-top:5px;
             color:#082c52;
             font-size:22px;
-            font-weight: var(--mollick-fw-900, 900);
+            font-weight:900;
           ">
             Prescription
           </div>
@@ -450,7 +450,7 @@ const downloadClinicalNotePdf = async ({
         <div style="
           color:#082c52;
           font-size:19px;
-          font-weight: var(--mollick-fw-900, 900);
+          font-weight:900;
           margin-bottom:5px;
         ">
           Medicines

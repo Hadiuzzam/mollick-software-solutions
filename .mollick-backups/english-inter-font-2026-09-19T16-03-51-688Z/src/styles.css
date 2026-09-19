@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
 
 :root {
   --navy: #082c52;
@@ -483,7 +483,7 @@ a { color: inherit; text-decoration: none; }
 .doctor-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 4%; display: block; }
 .doctor-flow-card:hover .doctor-photo img { transform: scale(1.025); transition: transform .32s ease; }
 .doctor-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
-.doctor-card-top > span { width: 54px; height: 54px; display: grid; place-items: center; flex-shrink: 0; background: var(--sky); color: var(--navy); border-radius: 50%; font-size: 15px; font-weight: var(--mollick-fw-900, 900); }
+.doctor-card-top > span { width: 54px; height: 54px; display: grid; place-items: center; flex-shrink: 0; background: var(--sky); color: var(--navy); border-radius: 50%; font-size: 15px; font-weight: 900; }
 .doctor-card-top b { color: var(--green); font-size: 11px; line-height: 1.5; text-align: right; }
 .doctor-flow-card h3 { margin: 16px 0 8px; color: var(--navy); font-size: 22px; line-height: 1.28; }
 .doctor-flow-card p { margin: 0; color: var(--blue); font-size: 13px; font-weight: 800; line-height: 1.55; }
@@ -500,7 +500,7 @@ a { color: inherit; text-decoration: none; }
 .doctor-full-card { padding: 22px; display: grid; grid-template-columns: 82px 1fr; gap: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(4,29,56,.05); }
 .doctor-full-photo { width: 76px; height: 76px; position: relative; overflow: hidden; background-color: var(--sky); border-radius: 50%; box-shadow: 0 0 0 1px var(--line); }
 .doctor-full-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 4%; display: block; }
-.doctor-full-photo span { width: 100%; height: 100%; display: grid; place-items: center; background: var(--sky); color: var(--navy); font-size: 14px; font-weight: var(--mollick-fw-900, 900); }
+.doctor-full-photo span { width: 100%; height: 100%; display: grid; place-items: center; background: var(--sky); color: var(--navy); font-size: 14px; font-weight: 900; }
 .doctor-full-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 22px; }
 .doctor-full-card p { margin: 0; color: var(--blue); font-size: 13px; font-weight: 800; }
 .doctor-full-card small, .doctor-full-card em, .doctor-full-card b { display: block; margin-top: 9px; color: var(--muted); font-size: 12px; line-height: 1.65; font-style: normal; }
@@ -651,11 +651,11 @@ a { color: inherit; text-decoration: none; }
 .patient-page-content .booking-list { grid-template-columns: repeat(auto-fit,minmax(340px,1fr)); gap: 16px; }
 .patient-page-content .booking-list article { position: relative; min-height: 190px; padding: 24px 118px 22px 92px; overflow: hidden; border: 1px solid #d9e7ee; border-radius: 20px; background: linear-gradient(145deg,#fff,#f7fbfc); box-shadow: 0 12px 30px rgba(13,46,66,.07); }
 .patient-page-content .booking-list article > strong { display: block; min-height: 26px; margin: 0 0 7px; color: var(--navy); font-size: 18px; line-height: 1.35; }
-.patient-page-content .booking-list article > span { display: inline-flex; width: fit-content; margin-bottom: 7px; padding: 7px 10px; border-radius: 10px; color: #087345; background: #e6f5ed; font-size: 14px; font-weight: var(--mollick-fw-900, 900); }
+.patient-page-content .booking-list article > span { display: inline-flex; width: fit-content; margin-bottom: 7px; padding: 7px 10px; border-radius: 10px; color: #087345; background: #e6f5ed; font-size: 14px; font-weight: 900; }
 .patient-page-content .booking-list article > small { display: block; margin-top: 5px; overflow-wrap: anywhere; line-height: 1.45; }
 .booking-doctor-photo,.booking-doctor-fallback { position: absolute; left: 20px; top: 22px; width: 56px; height: 56px; border-radius: 16px; object-fit: cover; object-position: center 14%; box-shadow: 0 0 0 4px #fff,0 8px 22px rgba(13,46,66,.13); }
 .booking-doctor-fallback { display: grid; place-items: center; color: var(--green); background: #e6f5ed; }
-.portal-booking-status { position: absolute; right: 18px; top: 22px; max-width: 92px; padding: 7px 11px; border-radius: 999px; color: #9a6800; background: #fff1c7; font-size: 10px; font-weight: var(--mollick-fw-900, 900); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+.portal-booking-status { position: absolute; right: 18px; top: 22px; max-width: 92px; padding: 7px 11px; border-radius: 999px; color: #9a6800; background: #fff1c7; font-size: 10px; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: .04em; }
 .portal-booking-status.status-accepted,.portal-booking-status.status-confirmed { color: #087345; background: #dff5e9; }
 .portal-booking-status.status-completed { color: #1762a5; background: #e4f0fc; }
 .portal-booking-status.status-cancelled,.portal-booking-status.status-rejected { color: #ad3038; background: #fce7e9; }
@@ -674,26 +674,26 @@ a { color: inherit; text-decoration: none; }
 .portal-auth-card .portal-tabs { width: fit-content; margin: 0 auto 24px; padding: 5px; border-radius: 14px; background: #edf4f6; }
 .portal-auth-card .portal-tabs button { min-width: 120px; border-radius: 10px; border: 0; }
 .portal-auth-card form { display: grid; gap: 16px; }
-.portal-auth-card form > label,.portal-auth-card .booking-grid label { display: grid; gap: 8px; color: var(--navy); font-size: 13px; font-weight: var(--mollick-fw-850, 850); }
+.portal-auth-card form > label,.portal-auth-card .booking-grid label { display: grid; gap: 8px; color: var(--navy); font-size: 13px; font-weight: 850; }
 .portal-auth-card input { width: 100%; min-height: 52px; padding: 0 15px; border: 1px solid #cbdde5; border-radius: 13px; background: #f9fcfd; color: var(--navy); font: inherit; outline: none; }
 .portal-auth-card input:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(10,137,78,.1); background: white; }
-.portal-auth-card .button.primary { min-height: 54px; margin-top: 4px; border-radius: 13px; justify-content: center; font-weight: var(--mollick-fw-900, 900); box-shadow: 0 14px 30px rgba(8,45,72,.18); }
+.portal-auth-card .button.primary { min-height: 54px; margin-top: 4px; border-radius: 13px; justify-content: center; font-weight: 900; box-shadow: 0 14px 30px rgba(8,45,72,.18); }
 
 .patient-page-content .booking-list .portal-booking-card { min-height: 0; padding: 22px; }
 .portal-booking-head { display: grid; grid-template-columns: 64px minmax(0,1fr) auto; align-items: center; gap: 14px; padding-bottom: 17px; border-bottom: 1px solid #e1ebef; }
 .portal-booking-avatar { width: 64px; height: 64px; overflow: hidden; border-radius: 18px; background: #e6f5ed; box-shadow: 0 0 0 4px #fff,0 8px 22px rgba(13,46,66,.12); }
 .portal-booking-avatar img,.portal-booking-avatar > span { width: 100%; height: 100%; display: grid; place-items: center; object-fit: cover; object-position: center 15%; }
 .portal-booking-doctor { min-width: 0; display: grid; gap: 3px; }
-.portal-booking-doctor small { color: var(--muted); font-size: 10px; font-weight: var(--mollick-fw-900, 900); text-transform: uppercase; letter-spacing: .06em; }
+.portal-booking-doctor small { color: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
 .portal-booking-doctor strong { color: var(--navy); font-size: 18px; line-height: 1.3; }
-.portal-booking-doctor span { color: var(--green); font-size: 12px; font-weight: var(--mollick-fw-850, 850); }
+.portal-booking-doctor span { color: var(--green); font-size: 12px; font-weight: 850; }
 .portal-booking-head .portal-booking-status { position: static; align-self: start; max-width: 105px; }
 .portal-booking-time { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 17px 0; padding: 13px 15px; border-radius: 14px; color: var(--navy); background: #eaf7f1; }
-.portal-booking-time span { color: #087345; font-weight: var(--mollick-fw-900, 900); }
+.portal-booking-time span { color: #087345; font-weight: 900; }
 .portal-booking-time b { font-size: 17px; }
 .portal-booking-meta { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
 .portal-booking-meta > span { min-width: 0; display: grid; gap: 4px; padding: 11px 13px; border-radius: 12px; background: #f3f7f9; }
-.portal-booking-meta small { color: var(--muted); font-size: 9px; font-weight: var(--mollick-fw-900, 900); text-transform: uppercase; letter-spacing: .06em; }
+.portal-booking-meta small { color: var(--muted); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
 .portal-booking-meta b { overflow-wrap: anywhere; color: var(--navy); font-size: 11px; text-transform: capitalize; }
 
 @media (max-width: 620px) {
@@ -721,7 +721,7 @@ a { color: inherit; text-decoration: none; }
 .patient-profile-grid { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px 22px !important; margin-top: 16px; }
 .patient-profile-grid span { display: grid; gap: 3px; padding: 10px 12px; border-radius: 12px; background: #f5f9f7; }
 .patient-profile-grid span.full { grid-column: 1/-1; }
-.patient-profile-grid small { text-transform: uppercase; font-size: 10px; font-weight: var(--mollick-fw-900, 900); letter-spacing: .05em; }
+.patient-profile-grid small { text-transform: uppercase; font-size: 10px; font-weight: 900; letter-spacing: .05em; }
 .patient-profile-grid strong { color: var(--navy); overflow-wrap: anywhere; }
 .patient-page-content .portal-panel { padding: 25px; border-radius: 24px; background: white; box-shadow: 0 14px 38px rgba(13,46,66,.06); }
 .patient-page-content .portal-panel h3 { font-size: 25px; }
@@ -3116,7 +3116,7 @@ html[lang="bn"]
   color: #0b8656;
 
   font-size: 22px;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .portal-prescription-heading > div:last-child {
@@ -3127,7 +3127,7 @@ html[lang="bn"]
 .portal-prescription-heading small {
   color: #60786d;
   font-size: 9px;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .06em;
 }
@@ -3206,7 +3206,7 @@ html[lang="bn"]
 .portal-prescription-followup span {
   color: var(--navy) !important;
   font-size: 13px;
-  font-weight: var(--mollick-fw-900, 900) !important;
+  font-weight: 900 !important;
 }
 
 .portal-prescription-download {
@@ -3227,7 +3227,7 @@ html[lang="bn"]
   background: var(--navy);
   color: #ffffff;
 
-  font-weight: var(--mollick-fw-850, 850);
+  font-weight: 850;
 
   transition:
     transform .2s ease,
@@ -3246,7 +3246,7 @@ html[lang="bn"]
 .portal-prescription-download span {
   color: #ffffff !important;
   font-size: 19px;
-  font-weight: var(--mollick-fw-900, 900) !important;
+  font-weight: 900 !important;
 }
 
 @media (max-width: 620px) {
@@ -3585,7 +3585,7 @@ main#home {
   background: var(--sky);
   color: var(--navy);
   font-size: 12px;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .software-package-card h3 {
@@ -3841,7 +3841,7 @@ main#home {
   color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
   line-height: 1;
-  font-weight: var(--mollick-fw-850, 850);
+  font-weight: 850;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -3866,7 +3866,7 @@ main#home {
 
 .contact-lead strong {
   color: #ffffff;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .contact-lead span {
@@ -3971,7 +3971,7 @@ main#home {
   background: #ffffff;
   color: #06142F;
   font-size: 15px;
-  font-weight: var(--mollick-fw-850, 850);
+  font-weight: 850;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
   transition:
     transform 0.22s ease,
@@ -4691,44 +4691,3 @@ main#home {
 }
 
 /* === MOLLICK PREMIUM IMAGE PACKAGE CARDS END === */
-
-/* === MOLLICK ENGLISH INTER TYPOGRAPHY START === */
-
-/*
-  English website typography only.
-  Bangla remains on the existing Bengali font.
-*/
-html[lang="en"] {
-  --mollick-fw-850: 800;
-  --mollick-fw-900: 800;
-}
-
-html[lang="bn"] {
-  --mollick-fw-850: 850;
-  --mollick-fw-900: 900;
-}
-
-html[lang="en"] body,
-html[lang="en"] body * {
-  font-family: "Inter", sans-serif !important;
-}
-
-/* Hero: cleaner premium weight, not too heavy */
-html[lang="en"] .mollick-boom-hero h1,
-html[lang="en"] .mollick-boom-hero h1 span,
-html[lang="en"] .mollick-boom-hero h1 strong {
-  font-family: "Inter", sans-serif !important;
-  font-weight: 700 !important;
-}
-
-/* Keep strong section headings within the requested maximum */
-html[lang="en"] h1,
-html[lang="en"] h2,
-html[lang="en"] h3,
-html[lang="en"] h4,
-html[lang="en"] h5,
-html[lang="en"] h6 {
-  font-family: "Inter", sans-serif !important;
-}
-
-/* === MOLLICK ENGLISH INTER TYPOGRAPHY END === */

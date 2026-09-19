@@ -225,7 +225,7 @@ const downloadClinicalNotePdf = async ({
             <div style="
               color:#082c52;
               font-size:23px;
-              font-weight: var(--mollick-fw-900, 900);
+              font-weight:900;
             ">
               BRIGHT HEALTH
             </div>
@@ -251,7 +251,7 @@ const downloadClinicalNotePdf = async ({
           <div style="
             color:#0b8656;
             font-size:12px;
-            font-weight: var(--mollick-fw-900, 900);
+            font-weight:900;
           ">
             DOCTOR PRESCRIPTION
           </div>
@@ -260,7 +260,7 @@ const downloadClinicalNotePdf = async ({
             margin-top:5px;
             color:#082c52;
             font-size:22px;
-            font-weight: var(--mollick-fw-900, 900);
+            font-weight:900;
           ">
             Prescription
           </div>
@@ -450,7 +450,7 @@ const downloadClinicalNotePdf = async ({
         <div style="
           color:#082c52;
           font-size:19px;
-          font-weight: var(--mollick-fw-900, 900);
+          font-weight:900;
           margin-bottom:5px;
         ">
           Medicines
@@ -4017,13 +4017,13 @@ export default function App() {
             >
               <span>
                 {lang === "en"
-                  ? "Your plan,"
-                  : "পরিকল্পনা আপনার,"}
+                  ? "We build software that grow"
+                  : "আমরা এমন সফটওয়্যার তৈরি করি,"}
               </span>
               <strong>
                 {lang === "en"
-                  ? "our responsibility to bring it to life."
-                  : "বাস্তবায়নের দায়িত্ব আমাদের।"}
+                  ? "your business."
+                  : "যা আপনার ব্যবসাকে এগিয়ে নিয়ে যায়।"}
               </strong>
             </h1>
 
@@ -4038,7 +4038,7 @@ export default function App() {
               className="mollick-boom-cta"
               onClick={() => scrollTo("contact")}
             >
-              {lang === "en" ? "Contact Us" : "যোগাযোগ করুন"}
+              {lang === "en" ? "Book a call" : "কল বুক করুন"}
               <Icon name="arrow" size={18} />
             </button>
             <div

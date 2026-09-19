@@ -27,7 +27,7 @@
   display: block;
   color: #06142F;
   font-size: 13px;
-  font-weight: var(--mollick-fw-850, 850);
+  font-weight: 850;
   line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -97,7 +97,7 @@
   border-radius: 50%;
   color: #06142F;
   font-size: 11px;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .mollick-faq__item summary strong {

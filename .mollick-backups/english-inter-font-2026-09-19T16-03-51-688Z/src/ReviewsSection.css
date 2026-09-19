@@ -19,7 +19,7 @@
   display: block;
   color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
-  font-weight: var(--mollick-fw-850, 850);
+  font-weight: 850;
   line-height: 1;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -92,7 +92,7 @@
   color: rgba(255, 255, 255, 0.34);
   font-size: 62px;
   line-height: 0.7;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .mollick-reviews blockquote {
@@ -120,7 +120,7 @@
   border-radius: 50%;
   background: #ffffff;
   color: #06142F;
-  font-weight: var(--mollick-fw-900, 900);
+  font-weight: 900;
 }
 
 .mollick-reviews__person div:last-child {
